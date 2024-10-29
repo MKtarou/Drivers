@@ -31,29 +31,31 @@
                 <thead>
                     <tr>
                         <th>日付</th>
+                        <th>登録者</th>
                         <th>カテゴリ</th>
                         <th>金額</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 収支データのループ処理 -->
                     @foreach($homebudgets as $homebudget)
                     <tr>
-                        <td>{{$homebudget->date}}</td>
-                        <td>{{$homebudget->category->name}}</td>
+                        <td>{{ $homebudget->date }}</td>
+                        <!-- ユーザー名を表示 -->
+                        <td>{{ $homebudget->user->u_name ?? '不明なユーザー' }}</td>
+                        <td>{{ $homebudget->category->name }}</td>
                         <td>
                             @if($homebudget->category->name == '収入')
                                 <span class="income">
                             @else
                                 <span class="payment">
                             @endif
-                        {{$homebudget->price}}</span>
+                            {{ $homebudget->price }}</span>
                         </td>
                         <td class="button-td">
-                            <form action="{{route('homebudget.edit', ['id'=>$homebudget->id])}}" method="">
+                            <form action="{{ route('homebudget.edit', ['id' => $homebudget->id]) }}" method="">
                                 <input type="submit" value="更新" class="edit-button">
                             </form>
-                            <form action="{{route('homebudget.destroy', ['id'=>$homebudget->id])}}" method="POST">
+                            <form action="{{ route('homebudget.destroy', ['id' => $homebudget->id]) }}" method="POST">
                                 @csrf
                                 <input type="submit" value="削除" class="delete-button">
                             </form>
@@ -61,6 +63,7 @@
                     </tr>
                     @endforeach
                 </tbody>
+
                 
             </table>
             <div class="flex">
@@ -99,9 +102,10 @@
                 <label for="user">ユーザー:</label>
                 <select name="user_id" id="user_id">
                     @foreach($users as $user)
-                    <option value="{{$user->user_id}}">{{$user->u_name}}</option>
+                    <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
                     @endforeach
                 </select>
+
                 @if($errors->has('user_id')) <span class="error">{{$errors->first('user_id')}}</span> @endif
 
                 <label for="price">金額:</label>
