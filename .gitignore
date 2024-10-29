@@ -1,0 +1,38 @@
+# Laravel cache
+/bootstrap/cache/*.php
+
+# Laravel storage and public directories
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+
+# Laravel environment files
+.env
+.env.*   # 環境に依存する.envファイルを全て除外
+.phpunit.cache
+.phpunit.result.cache
+
+# Composer
+/vendor
+/composer.lock
+/auth.json
+
+# Node & npm/Yarn
+/node_modules
+/npm-debug.log
+/yarn-error.log
+
+# IDE/Editor-specific files
+/.fleet
+/.idea
+/.vscode
+
+# OS generated files
+.DS_Store
+Thumbs.db
