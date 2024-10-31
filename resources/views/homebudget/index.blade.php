@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <h1>家計簿アプリ</h1>
+        <h1>{{ $groupName }}の家計簿</h1>
     </header>
 
     <section class="container">
@@ -33,6 +33,7 @@
                         <th>日付</th>
                         <th>登録者</th>
                         <th>カテゴリ</th>
+                        <th>詳細</th>
                         <th>金額</th>
                     </tr>
                 </thead>
@@ -42,15 +43,17 @@
                         <td>{{ $homebudget->date }}</td>
                         <!-- ユーザー名を表示 -->
                         <td>{{ $homebudget->user->u_name ?? '不明なユーザー' }}</td>
-                        <td>{{ $homebudget->category->name }}</td>
+                        <td>{{ $homebudget->category->name ?? '収入' }}</td>
+                        <td>{{ $homebudget->details ?? 'なし' }}</td>
                         <td>
-                            @if($homebudget->category->name == '収入')
-                                <span class="income">
+                            @if($homebudget->price > 0)
+                                <span class="income">+{{ $homebudget->price }}</span>
                             @else
-                                <span class="payment">
+                                <span class="payment">-{{ abs($homebudget->price) }}</span>
                             @endif
-                            {{ $homebudget->price }}</span>
                         </td>
+
+
                         <td class="button-td">
                             <form action="{{ route('homebudget.edit', ['id' => $homebudget->id]) }}" method="">
                                 <input type="submit" value="更新" class="edit-button">
@@ -74,7 +77,7 @@
 
 
                     <p>収入合計：{{$income}}円</p>
-                    <p>収支合計：{{$payment}}円</p>
+                    <p>支出合計：{{$payment}}円</p>
                 </div>
             </div>
             
@@ -84,37 +87,61 @@
         
 
         <div class="add-balance">
-            <h3>収支の追加</h3>
-            <form action="{{ route('store') }}" method="POST">
-                @csrf
-                <label for="date">日付:</label>
-                <input type="date" id="date" name="date">
-                @if($errors->has('date')) <span class="error">{{$errors->first('date')}}</span> @endif
+        <h3>収支の追加</h3>
 
+        <!-- 収入・支出の切り替えボタン -->
+        <div class="toggle-container">
+            <input type="checkbox" id="transactionToggle" onchange="toggleTransactionType()" />
+            <label for="transactionToggle" class="toggle-label">
+                <span class="toggle-income">収入</span>
+                <span class="toggle-slider"></span>
+                <span class="toggle-expense">支出</span>
+            </label>
+        </div>
+
+
+        <form id="balanceForm" action="{{ route('store') }}" method="POST">
+            @csrf
+            <input type="hidden" id="transactionType" name="transaction_type" value="expense">
+
+            <label for="date">日付:</label>
+            <input type="date" id="date" name="date">
+            @if($errors->has('date')) <span class="error">{{$errors->first('date')}}</span> @endif
+
+            <!-- カテゴリ選択欄（支出の時のみ表示） -->
+            <div id="categorySection">
                 <label for="category">カテゴリ:</label>
+                <br>
                 <select name="category" id="category">
                     @foreach($categories as $category)
                     <option value="{{$category->id}}">{{$category->name}}</option>
                     @endforeach
                 </select>
                 @if($errors->has('category')) <span class="error">{{$errors->first('category')}}</span> @endif
+            </div>
 
-                <label for="user">ユーザー:</label>
-                <select name="user_id" id="user_id">
-                    @foreach($users as $user)
-                    <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
-                    @endforeach
-                </select>
+            <!-- 詳細欄 -->
+            <label for="details">詳細:</label>
+            <textarea id="details" name="details"></textarea>
+            @if($errors->has('details')) <span class="error">{{$errors->first('details')}}</span> @endif
 
-                @if($errors->has('user_id')) <span class="error">{{$errors->first('user_id')}}</span> @endif
+            <label for="user">ユーザー:</label>
+            <select name="user_id" id="user_id">
+                @foreach($users as $user)
+                <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
+                @endforeach
+            </select>
 
-                <label for="price">金額:</label>
-                <input type="text" id="price" name="price">
-                @if($errors->has('price')) <span class="error">{{$errors->first('price')}}</span> @endif
+            @if($errors->has('user_id')) <span class="error">{{$errors->first('user_id')}}</span> @endif
 
-                <button type="submit">追加</button>
-            </form>
-        </div>
+            <label for="price">金額:</label>
+            <input type="text" id="price" name="price">
+            @if($errors->has('price')) <span class="error">{{$errors->first('price')}}</span> @endif
+
+            <button type="submit">追加</button>
+        </form>
+    </div>
+
 
 
         
@@ -187,4 +214,35 @@
             }
         }
     });
+
+    function toggleForm(type) {
+        const form = document.getElementById('balanceForm');
+        const transactionType = document.getElementById('transactionType');
+        const categorySection = document.getElementById('categorySection');
+
+        if (type === 'income') {
+            transactionType.value = 'income';
+            form.querySelector('button[type="submit"]').textContent = '収入を追加';
+            categorySection.style.display = 'none'; // カテゴリ選択を非表示
+        } else {
+            transactionType.value = 'expense';
+            form.querySelector('button[type="submit"]').textContent = '支出を追加';
+            categorySection.style.display = 'block'; // カテゴリ選択を表示
+        }
+    }
+
+    function toggleTransactionType() {
+        const transactionType = document.getElementById('transactionType');
+        const categorySection = document.getElementById('categorySection');
+        const toggle = document.getElementById('transactionToggle');
+
+        if (toggle.checked) {
+            transactionType.value = 'income';
+            categorySection.style.display = 'none'; // カテゴリ選択を非表示
+        } else {
+            transactionType.value = 'expense';
+            categorySection.style.display = 'block'; // カテゴリ選択を表示
+        }
+    }
+
 </script>

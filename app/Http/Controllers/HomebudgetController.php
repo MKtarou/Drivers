@@ -16,28 +16,30 @@ class HomebudgetController extends Controller
      */
     public function index(Request $request)
     {
-        // セッションからグループIDを取得
-        $groupId = $request->session()->get('group_id', 2);
+        $groupId = 1;
 
-        // グループに属するユーザーを取得
+        // `group_id` カラムを指定して取得
+        $group = Group::where('group_id', $groupId)->first();
+
+        $groupName = $group ? $group->g_name : 'グループ名不明';
+
         $users = User::where('group_id', $groupId)->get();
 
-        // 収支データを取得
         $homebudgets = HomeBudget::with(['category', 'user']) 
             ->where('group_id', $groupId)
             ->orderBy('date', 'desc')
             ->paginate(5);
 
-        // 収入合計と支出合計
+        // 収入合計と支出合計の取得
         $income = HomeBudget::where('group_id', $groupId)
-            ->where('category_id', 6) // 収入カテゴリ
+            ->where('price', '>', 0)
             ->sum('price');
         
         $payment = HomeBudget::where('group_id', $groupId)
-            ->where('category_id', '!=', 6) // 収入以外
+            ->where('price', '<', 0)
             ->sum('price');
+        $payment = abs($payment);
 
-        // カテゴリごとの合計を取得（円グラフ用データ）
         $data = DB::table('home_budgets')
             ->join('categories', 'home_budgets.category_id', '=', 'categories.id')
             ->select('categories.name', DB::raw('SUM(home_budgets.price) as total_price'))
@@ -45,10 +47,12 @@ class HomebudgetController extends Controller
             ->groupBy('categories.name')
             ->get();
 
-            
         $categories = Category::all();
-        return view('homebudget.index', compact('homebudgets', 'income', 'payment', 'data', 'users', 'categories'));
+
+        // ビューにグループ名を渡す
+        return view('homebudget.index', compact('homebudgets', 'income', 'payment', 'data', 'users', 'categories', 'groupName'));
     }
+
 
 
 
@@ -65,42 +69,34 @@ class HomebudgetController extends Controller
      */
     public function store(Request $request)
     {
-        // フォームデータのバリデーション
         $validated = $request->validate([
             'date' => 'required|date',
-            'category' => 'required|numeric',
             'user_id' => 'required|numeric',
             'price' => 'required|numeric',
+            'transaction_type' => 'required|string',
+            'details' => 'nullable|string',
+            'category' => 'required_if:transaction_type,expense|numeric'
         ]);
 
-        // セッションからグループIDを取得
-        $groupId = $request->session()->get('group_id', 1); // デフォルト値として 1 を設定
+        $groupId = 1;
         $request->session()->put('group_id', $groupId);
 
-        // 個別のフィールド設定でデータベースに新しい収支データを挿入
         $homeBudget = new HomeBudget();
         $homeBudget->date = $request->date;
-        $homeBudget->category_id = $request->category;
-        $homeBudget->group_id = $groupId;  // セッションから取得した group_id
-        $homeBudget->user_id = $request->user_id;  // フォームから送信された user_id
-        $homeBudget->price = $request->price;
-        
-        // データを保存
-        $result = $homeBudget->save();
+        $homeBudget->group_id = $groupId;
+        $homeBudget->user_id = $request->user_id;
+        $homeBudget->price = $request->transaction_type === 'income' ? $request->price : -$request->price;
+        $homeBudget->details = $request->details;
 
-        // 登録結果のメッセージをセッションに保存
-        if ($result) {
-            session()->flash('flash_message', '収支を登録しました。');
-        } else {
-            session()->flash('flash_error_message', '収支を登録できませんでした。');
+        // 支出の時のみカテゴリIDを保存
+        if ($request->transaction_type === 'expense') {
+            $homeBudget->category_id = $request->category;
         }
 
+        $result = $homeBudget->save();
+        session()->flash('flash_message', $result ? '収支を登録しました。' : '収支を登録できませんでした。');
         return redirect('/');
     }
-
-
-
-
 
     /**
      * Display the specified resource.
