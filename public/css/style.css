@@ -259,3 +259,97 @@ background: #f2f2f2;
     display: block;
     max-width: 50%;
 }
+
+.income {
+    color: rgb(0, 0, 203); /* 収入の金額を青色で表示 */
+}
+
+.payment {
+    color: red; /* 支出の金額を赤色で表示 */
+}
+
+/* トグルスイッチのコンテナ */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* トグルスイッチのスタイル */
+.toggle-label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    width: 80px;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 15px;
+    transition: background-color 0.3s;
+}
+
+/* トグルスライダー */
+.toggle-slider {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 22px;
+    height: 22px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+/* 収入・支出のテキスト */
+.toggle-income,
+.toggle-expense {
+    font-size: 12px;
+    padding: 0 5px;
+    color: #555;
+}
+
+/* チェックボックスのスタイル（非表示） */
+#transactionToggle {
+    display: none;
+}
+
+/* チェックが入ったときのスライダーの位置と背景色 */
+#transactionToggle:checked + .toggle-label {
+    background-color: #4CAF50;
+}
+
+#transactionToggle:checked + .toggle-label .toggle-slider {
+    transform: translateX(50px);
+}
+/* トグルスイッチの収入・支出テキストのスタイル */
+.toggle-income,
+.toggle-expense {
+    font-size: 12px;
+    padding: 0 5px;
+    color: #555;
+    width: 40px;
+    text-align: center;
+    transition: opacity 0.3s ease;
+}
+
+/* チェックが入っていないときは支出が表示され、収入が非表示 */
+#transactionToggle:not(:checked) + .toggle-label .toggle-income {
+    opacity: 0;
+    
+}
+
+#transactionToggle:not(:checked) + .toggle-label .toggle-expense {
+    opacity: 1;
+    
+}
+
+/* チェックが入っているときは支出が表示され、収入が非表示 */
+#transactionToggle:checked + .toggle-label .toggle-income {
+    opacity: 1;
+    color:white;
+}
+
+#transactionToggle:checked + .toggle-label .toggle-expense {
+    opacity: 0;
+}
