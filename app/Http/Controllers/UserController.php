@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Users;
 
 class UserController extends Controller
 {
@@ -12,7 +12,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = Users::all();
         return view('user.index', compact('users'));
     }
 
@@ -51,7 +51,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id);
+        $user = Users::findOrFail($id);
         return view('user.edit', compact('user'));
     }
 
@@ -67,7 +67,7 @@ class UserController extends Controller
             'u_goal' => 'nullable|numeric',
         ]);
 
-        $user = User::findOrFail($id);
+        $user = Users::findOrFail($id);
         $user->u_name = $request->u_name;
         if ($request->filled('u_pass')) {
             $user->u_pass = bcrypt($request->u_pass);
@@ -84,7 +84,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        $user = Users::findOrFail($id);
         $user->delete();
 
         return redirect()->route('user.index')->with('success', 'ユーザーを削除しました。');
