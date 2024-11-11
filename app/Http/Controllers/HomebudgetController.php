@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\HomeBudget;
-use App\Models\Group;
-use App\Models\User;
+use App\Models\Groups;
+use App\Models\Users;
 
 class HomebudgetController extends Controller
 {
@@ -19,11 +19,11 @@ class HomebudgetController extends Controller
         $groupId = 1;
 
         // `group_id` カラムを指定して取得
-        $group = Group::where('group_id', $groupId)->first();
+        $group = Groups::where('group_id', $groupId)->first();
 
         $groupName = $group ? $group->g_name : 'グループ名不明';
 
-        $users = User::where('group_id', $groupId)->get();
+        $users = Users::where('group_id', $groupId)->get();
 
         $homebudgets = HomeBudget::with(['category', 'user']) 
             ->where('group_id', $groupId)
@@ -151,6 +151,27 @@ class HomebudgetController extends Controller
         session()->flash('flash_message', '収支を削除しました。');
         return redirect('/');
     }
+
+
+    public function dashboard(Request $request)
+    {
+        $groupId = 1; // セッションからグループIDを取得または固定
+        $group = Groups::where('group_id', $groupId)->first();
+
+        $groupName = $group ? $group->g_name : 'グループ名不明';
+
+        // 個人とグループの収支データを取得
+        $individualIncome = HomeBudget::where('group_id', $groupId)->where('price', '>', 0)->sum('price');
+        $individualExpense = HomeBudget::where('group_id', $groupId)->where('price', '<', 0)->sum('price');
+
+        $groupIncome = $individualIncome; // 例：グループと個人でデータを分ける場合は適切に設定
+        $groupExpense = $individualExpense;
+
+        return view('homebudget.dashboard', compact('groupName', 'individualIncome', 'individualExpense', 'groupIncome', 'groupExpense'));
+
+    }
+
+
 
     // public function getCategoryData()
     // {
