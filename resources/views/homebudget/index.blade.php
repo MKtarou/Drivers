@@ -5,6 +5,7 @@
     <title>家計簿アプリ</title>
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 <body>
     <header>
@@ -14,7 +15,9 @@
         </nav> -->
     </header>
 
-    <section class="container chart-container">
+    
+    @include('homebudget.sidebar')
+    <section class="container chart-container" id="page-wrap">
 
         <div class="balance">
             
@@ -199,4 +202,5 @@
             categorySection.style.display = 'block';
         }
     }
+
 </script>
