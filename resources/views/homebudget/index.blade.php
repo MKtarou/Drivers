@@ -9,17 +9,15 @@
 <body>
     <header>
         <h1>{{ $groupName }}の家計簿</h1>
-        <nav>
+        <!-- <nav>
             <a href="{{ route('dashboard') }}">ダッシュボード</a>
-        </nav>
+        </nav> -->
     </header>
 
     <section class="container chart-container">
 
         <div class="balance">
             
-        <canvas id="categoryChart" ></canvas>
-
             <h3>収支一覧</h3>
             @if(session('flash_message'))
                 <div class="flash_message">
@@ -128,6 +126,8 @@
 
                 <button type="submit">追加</button>
             </form>
+
+            <canvas id="categoryChart" ></canvas>
         </div>
     </section>
 </body>

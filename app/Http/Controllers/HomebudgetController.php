@@ -28,7 +28,7 @@ class HomebudgetController extends Controller
         $homebudgets = HomeBudget::with(['category', 'user']) 
             ->where('group_id', $groupId)
             ->orderBy('date', 'desc')
-            ->paginate(5);
+            ->paginate(10);
 
         // 収入合計と支出合計の取得
         $income = HomeBudget::where('group_id', $groupId)
