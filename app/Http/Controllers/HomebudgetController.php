@@ -172,6 +172,67 @@ class HomebudgetController extends Controller
     }
 
 
+    public function calendar(Request $request)
+    {
+        $currentMonth = $request->query('month', date('m'));
+        $currentYear = $request->query('year', date('Y'));
+
+        $transactions = DB::table('home_budgets as hb')
+            ->join('users as u', 'hb.user_id', '=', 'u.user_id')
+            ->selectRaw('DAY(hb.date) as day,
+                         SUM(CASE WHEN hb.price > 0 THEN hb.price ELSE 0 END) as total_income,
+                         SUM(CASE WHEN hb.price < 0 THEN hb.price ELSE 0 END) as total_expenditure,
+                         hb.details,
+                         u.u_name as user_name')
+            ->whereMonth('hb.date', $currentMonth)
+            ->whereYear('hb.date', $currentYear)
+            ->groupBy('day', 'hb.details', 'u.u_name')
+            ->get();
+
+        $totalIncome = $transactions->sum('total_income');
+        $totalExpenditure = abs($transactions->sum('total_expenditure'));
+
+        // トランザクションを日付ごとに整形する
+        $groupedTransactions = [];
+        foreach ($transactions as $transaction) {
+            $day = $transaction->day;
+            $groupedTransactions[$day][] = [
+                'total_income' => (int)$transaction->total_income,
+                'total_expenditure' => (int)$transaction->total_expenditure,
+                'details' => $transaction->details,
+                'user_name' => $transaction->user_name,
+            ];
+        }
+
+        return view('Homebudget.calendar', [
+            'transactions' => $groupedTransactions,
+            'totalIncome' => $totalIncome,
+            'totalExpenditure' => $totalExpenditure,
+            'currentMonth' => $currentMonth,
+            'currentYear' => $currentYear,
+        ]);
+    }
+
+    public function balance(Request $request)
+    {
+        $month = $request->query('month', date('m'));
+        $year = $request->query('year', date('Y'));
+
+        // 月ごとの収支を取得
+        $entries = DB::table('home_budgets as hb')
+            ->join('users as u', 'hb.user_id', '=', 'u.user_id')
+            ->selectRaw("DATE_FORMAT(hb.date, '%Y/%m/%d') as date, hb.price, hb.details, u.u_name as user_name")
+            ->whereMonth('hb.date', $month)
+            ->whereYear('hb.date', $year)
+            ->get();
+
+        $totalIncome = $entries->filter(fn($entry) => $entry->price > 0)->sum('price');
+        $totalExpenditure = $entries->filter(fn($entry) => $entry->price < 0)->sum('price');
+        $balance = $totalIncome + $totalExpenditure;
+
+        return view('Homebudget.balance', compact('entries', 'totalIncome', 'totalExpenditure', 'balance', 'month', 'year'));
+    }
+
 
     // public function getCategoryData()
     // {
