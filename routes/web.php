@@ -27,5 +27,7 @@ Route::post('/post', [HomebudgetController::class, 'store'])->name('store');
 Route::get('/edit/{id}', [HomebudgetController::class, 'edit'])->name('homebudget.edit');
 Route::put('/update', [HomebudgetController::class, 'update'])->name('homebudget.update');
 Route::post('/destroy/{id}', [HomebudgetController::class, 'destroy'])->name('homebudget.destroy');
+Route::get('/calendar', [HomebudgetController::class, 'calendar'])->name('calendar');
+Route::get('/balance', [HomebudgetController::class, 'balance'])->name('balance');
 
 
