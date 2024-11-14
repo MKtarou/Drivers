@@ -13,10 +13,13 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
+        Category::create(['name' => '住居費']);
         Category::create(['name' => '食費']);
-        Category::create(['name' => '日用品']);
         Category::create(['name' => '交通費']);
         Category::create(['name' => '水道・光熱費']);
-        Category::create(['name' => '通信費']);
+        Category::create(['name' => '日用品']);        
+        Category::create(['name' => '通信費']);        
+        Category::create(['name' => '医療費']);        
+        Category::create(['name' => 'その他']);             
     }
 }

@@ -20,12 +20,14 @@ Route::get('/', function () {
     return view('homebudget.index');
 });
 
+
 Route::get('/', [HomebudgetController::class, 'index'])->name('index');
+Route::get('/dashboard', [HomebudgetController::class, 'dashboard'])->name('dashboard');
 Route::post('/post', [HomebudgetController::class, 'store'])->name('store');
 Route::get('/edit/{id}', [HomebudgetController::class, 'edit'])->name('homebudget.edit');
 Route::put('/update', [HomebudgetController::class, 'update'])->name('homebudget.update');
 Route::post('/destroy/{id}', [HomebudgetController::class, 'destroy'])->name('homebudget.destroy');
-Route::get('/category-data', [HomebudgetController::class, 'getCategoryData'])->name('category.data');
-Route::get('/homebudget', [HomebudgetController::class, 'index']);
-Route::resource('user', UserController::class);
+Route::get('/calendar', [HomebudgetController::class, 'calendar'])->name('calendar');
+Route::get('/balance', [HomebudgetController::class, 'balance'])->name('balance');
+
 
