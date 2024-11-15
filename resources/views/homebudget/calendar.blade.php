@@ -13,8 +13,8 @@
         <h1>カレンダー</h1>
         <div class="controls">
             <button onclick="changeMonth(-1)">◀</button>
-            <a href="{{ route('calendar', ['month' => $currentMonth, 'year' => $currentYear]) }}" style="text-decoration: none; color: black;">
-                <span id="currentMonth">{{ $currentYear }}年 {{ $currentMonth }}月</span>
+            <a id="currentMonth" href="{{ route('balance', ['month' => $currentMonth, 'year' => $currentYear]) }}" style="text-decoration: none; color: black;">
+                {{ $currentYear }}年 {{ $currentMonth }}月
             </a>
             <button onclick="changeMonth(1)">▶</button>
         </div>
@@ -51,8 +51,8 @@
                         if (entry.total_income !== 0 || entry.total_expenditure !== 0) {
                             cell.innerHTML += `
                                 <div>${entry.user_name || ''}</div>
-                                ${entry.total_income !== 0 ? `<div><strong>+</strong> ${formatNumber(entry.total_income)}</div>` : ''}
-                                ${entry.total_expenditure !== 0 ? `<div><strong>-</strong> ${formatNumber(Math.abs(entry.total_expenditure))}</div>` : ''}
+                                ${entry.total_income !== 0 ? `<div>+${formatNumber(entry.total_income)}</div>` : ''}
+                                ${entry.total_expenditure !== 0 ? `<div>-${formatNumber(Math.abs(entry.total_expenditure))}</div>` : ''}
                                 ${entry.details ? `<div class="details-text">${entry.details}</div>` : ''}
                             `;
                         }
