@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{asset('css/balance.css')}}">
     <title>月別収支詳細</title>
-</head>
 <body>
     @include('homebudget.sidebar')
     <div class="details-container">
@@ -20,7 +19,13 @@
             <div class="entry">
                 <div class="date">{{ $entry->date }}</div>
                 <div class="user">{{ htmlspecialchars($entry->user_name) }}</div>
-                <div class="amount">{{ number_format(abs($entry->price)) }}</div>
+                <div class="amount">
+                    @if($entry->price > 0)
+                        <span class="income-amount">+ {{ number_format($entry->price) }}</span>
+                    @else
+                        <span class="expenditure-amount">- {{ number_format(abs($entry->price)) }}</span>
+                    @endif
+                </div>
                 <div class="category">{{ htmlspecialchars($entry->details) }}</div>
             </div>
         @endforeach
