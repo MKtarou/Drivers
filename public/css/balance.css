@@ -36,8 +36,8 @@ h1 {
     justify-content: center;
     align-items: center;
 }
-.income { background-color: #8b008b; }
-.expenditure { background-color: #4b0082; }
+.income { background-color: rgb(0, 0, 203); }
+.expenditure { background-color: red; }
 .balance {
     font-size: 20px;
     margin: 20px 0;
@@ -69,4 +69,11 @@ h1 {
     color: #555;
     width: 40%;
     text-align: left;
+}
+
+.income-amount {
+    color: rgb(0, 0, 203); /* 収入の色 */
+}
+.expenditure-amount {
+    color: red; /* 支出の色 */
 }
