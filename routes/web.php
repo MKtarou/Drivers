@@ -34,3 +34,13 @@ Route::get('/homebudget/g_make', [GroupController::class, 'create'])->name('grou
 Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
 Route::post('/groups/confirm', [GroupController::class, 'confirm'])->name('groups.confirm');
 
+// 参加フォームを表示
+// Route::get('/participation', [HomebudgetController::class, 'participation_form'])->name('participation_form');
+Route::get('/participation', [HomebudgetController::class, 'participation_form'])->name('participation.form');
+
+// 確認画面を表示
+Route::post('/participation/confirm', [HomebudgetController::class, 'participation_confirm'])->name('participation.confirm');
+
+// 完了画面を表示
+Route::post('/participation/complete', [HomebudgetController::class, 'participation_complete'])->name('participation.complete');
+
