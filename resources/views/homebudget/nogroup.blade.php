@@ -70,8 +70,7 @@
         <div class="no-group-box">
             <h1>グループに加入していません</h1>
             <ul>
-                <li><a href="make.blade.php">グループを作成</a></li>
-                <li><a href="participation.blade.php">グループに参加</a></li>
+                <li><a href="{{ route('participation.form') }}">グループに参加</a></li>
             </ul>
         </div>
     </div>
