@@ -17,6 +17,7 @@ class HomebudgetController extends Controller
     public function index(Request $request)
     {
         $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+        $userId = session('userId'); // これでセッションからユーザーIDを取得できます
 
         // グループを取得
         $group = Groups::where('group_id', $groupId)->first();
@@ -271,33 +272,49 @@ class HomebudgetController extends Controller
     }
 
     // 完了画面を表示
-    public function participation_complete(Request $request)
-    {
+    public function participation_complete(Request $request){
         // 入力データを検証
         $validated = $request->validate([
             'name' => 'required|string|max:20', // グループ名
             'password' => 'required|string|max:10', // パスワード
         ]);
 
-        // `Groups` モデルを使用してグループを検索
+        // グループを検索
         $group = \App\Models\Groups::where('g_name', $validated['name'])
             ->where('g_pass', $validated['password'])
             ->first();
 
-        if (!$group) {
-            // グループが見つからない場合、エラーメッセージとともにリダイレクト
-            return redirect()->route('participation.form')
-                ->withErrors(['group' => 'グループ名またはパスワードが間違っています。']);
-        }
+            if (!$group) {
+                // グループが見つからない場合はエラーを返す
+                return redirect()->route('participation_form')
+                    ->withErrors(['group' => 'グループ名またはパスワードが間違っています。']);
+            }
 
-        // グループが見つかった場合、セッションにグループIDを保存
+        // グループIDをセッションに保存
         session(['groupId' => $group->group_id]);
 
-        // 完了画面を表示
+        // グループに属するユーザーを取得
+        $users = Users::where('group_id', $group->group_id)->get();
+
+        // 完了画面でユーザーを選択させる
         return view('homebudget.participation_complete', [
             'name' => $group->g_name,
+            'users' => $users,
         ]);
     }
 
+    // TOP遷移時にユーザーをセッションに保存
+    public function participation_save_user(Request $request){
+        // 選択されたユーザーIDを検証
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,user_id', // ユーザーIDが存在するか確認
+        ]);
+
+        // ユーザーIDをセッションに保存
+        session(['userId' => $validated['user_id']]);
+
+        // TOPページへリダイレクト
+        return redirect()->route('index')->with('flash_message', 'ユーザーが選択されました。');
+    }
 
 }
