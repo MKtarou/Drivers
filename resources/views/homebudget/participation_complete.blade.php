@@ -33,33 +33,44 @@
             margin-bottom: 20px;
         }
 
-        /* ボタンリンクの共通スタイル */
-        .join-button-link {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 100px;
-            height: 40px;
+        select {
+            width: 100%;
+            padding: 10px;
             font-size: 16px;
-            color: white;
-            background-color: #007bff;
-            border-radius: 5px;
-            text-decoration: none;
-            box-sizing: border-box;
-            margin: 10px;
-            border: none; /* ふちを消す */
+            margin-bottom: 20px;
         }
 
-        .join-button-link:hover {
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-<div class="join-confirm-container">
+    <div class="join-confirm-container">
         <h1>グループへの参加が完了しました</h1>
         <p>グループ名: {{ $name }}</p>
-        <a href="{{ route('index') }}">Topへ</a>
+
+        <!-- ユーザー選択フォーム -->
+        <form action="{{ route('participation.save_user') }}" method="post">
+            @csrf
+            <label for="user_id">ユーザーを選択してください:</label>
+            <select id="user_id" name="user_id" required>
+                <option value="">-- ユーザーを選択 --</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
+                @endforeach
+            </select>
+            <button type="submit">TOPへ</button>
+        </form>
     </div>
 </body>
 </html>
