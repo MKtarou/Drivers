@@ -33,6 +33,7 @@ Route::get('/balance', [HomebudgetController::class, 'balance'])->name('balance'
 Route::get('/homebudget/g_make', [GroupController::class, 'create'])->name('groups.create');
 Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
 Route::post('/groups/confirm', [GroupController::class, 'confirm'])->name('groups.confirm');
+Route::post('/participation/save-user', [HomebudgetController::class, 'participation_save_user'])->name('participation.save_user');
 
 // 参加フォームを表示
 // Route::get('/participation', [HomebudgetController::class, 'participation_form'])->name('participation_form');
