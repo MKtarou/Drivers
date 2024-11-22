@@ -16,16 +16,22 @@ class HomebudgetController extends Controller
      */
     public function index(Request $request)
     {
-        $groupId = 1;
+        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+        $userId = session('userId'); // これでセッションからユーザーIDを取得できます
 
-        // `group_id` カラムを指定して取得
+        // グループを取得
         $group = Groups::where('group_id', $groupId)->first();
 
-        $groupName = $group ? $group->g_name : 'グループ名不明';
+        // グループが存在しない場合は `nogroup` ビューを表示
+        if (!$group) {
+            return view('homebudget.nogroup');
+        }
+
+        $groupName = $group->g_name;
 
         $users = Users::where('group_id', $groupId)->get();
 
-        $homebudgets = HomeBudget::with(['category', 'user']) 
+        $homebudgets = HomeBudget::with(['category', 'user'])
             ->where('group_id', $groupId)
             ->orderBy('date', 'desc')
             ->paginate(10);
@@ -35,11 +41,11 @@ class HomebudgetController extends Controller
             ->where('price', '>', 0)
             ->sum('price');
         
-        $payment = HomeBudget::where('group_id', $groupId)
+        $payment = abs(HomeBudget::where('group_id', $groupId)
             ->where('price', '<', 0)
-            ->sum('price');
-        $payment = abs($payment);
+            ->sum('price'));
 
+        // カテゴリ別のデータ
         $data = DB::table('home_budgets')
             ->join('categories', 'home_budgets.category_id', '=', 'categories.id')
             ->select('categories.name', DB::raw('SUM(home_budgets.price) as total_price'))
@@ -49,9 +55,10 @@ class HomebudgetController extends Controller
 
         $categories = Category::all();
 
-        // ビューにグループ名を渡す
+        // ビューにデータを渡す
         return view('homebudget.index', compact('homebudgets', 'income', 'payment', 'data', 'users', 'categories', 'groupName'));
     }
+
 
 
 
@@ -233,7 +240,6 @@ class HomebudgetController extends Controller
         return view('Homebudget.balance', compact('entries', 'totalIncome', 'totalExpenditure', 'balance', 'month', 'year'));
     }
 
-
     // public function getCategoryData()
     // {
     //     $data = DB::table('home_budgets')
@@ -244,5 +250,71 @@ class HomebudgetController extends Controller
 
     //     return view('homebudget.index', compact('data'));
     // }
+
+    // 参加フォームを表示
+    public function participation_form()
+    {
+        return view('homebudget.participation_form');
+    }
+
+    // 確認画面を表示
+    public function participation_confirm(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|max:255',
+        ]);
+
+        return view('homebudget.participation_confirm', [
+            'name' => $validated['name'],
+            'password' => $validated['password'],
+        ]);
+    }
+
+    // 完了画面を表示
+    public function participation_complete(Request $request){
+        // 入力データを検証
+        $validated = $request->validate([
+            'name' => 'required|string|max:20', // グループ名
+            'password' => 'required|string|max:10', // パスワード
+        ]);
+
+        // グループを検索
+        $group = \App\Models\Groups::where('g_name', $validated['name'])
+            ->where('g_pass', $validated['password'])
+            ->first();
+
+            if (!$group) {
+                // グループが見つからない場合はエラーを返す
+                return redirect()->route('participation_form')
+                    ->withErrors(['group' => 'グループ名またはパスワードが間違っています。']);
+            }
+
+        // グループIDをセッションに保存
+        session(['groupId' => $group->group_id]);
+
+        // グループに属するユーザーを取得
+        $users = Users::where('group_id', $group->group_id)->get();
+
+        // 完了画面でユーザーを選択させる
+        return view('homebudget.participation_complete', [
+            'name' => $group->g_name,
+            'users' => $users,
+        ]);
+    }
+
+    // TOP遷移時にユーザーをセッションに保存
+    public function participation_save_user(Request $request){
+        // 選択されたユーザーIDを検証
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,user_id', // ユーザーIDが存在するか確認
+        ]);
+
+        // ユーザーIDをセッションに保存
+        session(['userId' => $validated['user_id']]);
+
+        // TOPページへリダイレクト
+        return redirect()->route('index')->with('flash_message', 'ユーザーが選択されました。');
+    }
 
 }

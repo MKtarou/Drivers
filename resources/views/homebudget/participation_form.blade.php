@@ -79,14 +79,17 @@
 <body>
     <div class="join-group-container">
         <h1>グループへ参加</h1>
-        <!-- フォーム：参加情報を送信 -->
-        <form action="participation2.blade.php" method="post">
-            <div class="join-input-group">
-                <label for="name">名前</label>
+        @if($errors->has('group'))
+            <p style="color: red;">{{ $errors->first('group') }}</p>
+        @endif
+        <form action="{{ route('participation.complete') }}" method="post">
+            @csrf
+            <div>
+                <label for="name">グループ名</label>
                 <input type="text" id="name" name="name" required>
             </div>
-            <div class="join-input-group">
-                <label for="password">パス</label>
+            <div>
+                <label for="password">パスワード</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <button type="submit">参加</button>

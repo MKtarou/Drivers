@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>グループ参加画面</title>
+    <title>グループ参加確認</title>
     <style>
         /* 背景と全体のレイアウト */
         body {
@@ -59,13 +59,13 @@
     <div class="join-confirm-container">
         <h1>グループに参加しますか？</h1>
         <div class="join-options">
-            <form action="participation3.blade.php" method="post" style="display: inline;">
-                <!-- 名前とパスワードを隠しフィールドで転送 -->
-                <input type="hidden" name="name" value="<?php echo htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8'); ?>">
-                <input type="hidden" name="password" value="<?php echo htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8'); ?>">
+            <form action="{{ route('participation.complete') }}" method="post" style="display: inline;">
+                @csrf
+                <input type="hidden" name="name" value="{{ $name }}">
+                <input type="hidden" name="password" value="{{ $password }}">
                 <button type="submit" class="join-button-link">はい</button>
             </form>
-            <a href="participation.blade.php" class="join-button-link">いいえ</a>
+            <a href="{{ route('participation.form') }}" class="join-button-link">いいえ</a>
         </div>
     </div>
 </body>
