@@ -21,29 +21,53 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user.create');
+        // セッションからgroup_idを取得
+        $groupId = session('groupId');
+        if (!$groupId) {
+            return redirect()->route('nogroup')->withErrors('グループIDが見つかりません。');
+        }
+
+        // ビューをhomebudgetフォルダ内のcreate_user.blade.phpに変更
+        return view('homebudget.create_user', compact('groupId'));
     }
 
     /**
-     * 新しいユーザーを保存.
+     * 新規ユーザー登録処理
      */
     public function store(Request $request)
     {
+        // セッションからgroup_idを取得
+        $groupId = session('groupId');
+        if (!$groupId) {
+            return redirect()->route('nogroup')->withErrors('グループIDが見つかりません。');
+        }
+
+        // バリデーション
         $validated = $request->validate([
-            'u_name' => 'required|max:255',
-            'u_pass' => 'required|max:255',
-            'group_id' => 'required|numeric',
+            'u_name' => 'required|string|max:20',
+            'u_pass' => 'required|string|max:10',
             'u_goal' => 'nullable|numeric',
+            'u_limit' => 'nullable|numeric',
         ]);
 
-        User::create([
-            'u_name' => $request->u_name,
-            'u_pass' => bcrypt($request->u_pass), // パスワードをハッシュ化
-            'group_id' => $request->group_id,
-            'u_goal' => $request->u_goal,
+        // 新規ユーザーを作成
+        $user = new Users();
+        $user->group_id = $groupId;
+        $user->u_name = $validated['u_name'];
+        $user->u_pass = $validated['u_pass'];
+        $user->u_goal = $validated['u_goal'];
+        $user->u_limit = $validated['u_limit'];
+        $user->save();
+
+        // 作成したユーザーをセッションに保存
+        session([
+            'userId' => $user->user_id,
+            'name' => $user->u_name,
+            'limit' => $user->u_limit,
+            'savings' => $user->u_goal,
         ]);
 
-        return redirect()->route('user.index')->with('success', 'ユーザーを作成しました。');
+        return redirect()->route('index')->with('success', '新規ユーザーを追加しました。');
     }
 
     /**
