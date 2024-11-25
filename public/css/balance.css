@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
+    height: 100vh;
+    margin: 0;
+}
+.details-container {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.summary .income, .summary .expenditure {
+    width: 45%;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.income { background-color: rgb(0, 0, 203); }
+.expenditure { background-color: red; }
+.balance {
+    font-size: 20px;
+    margin: 20px 0;
+    font-weight: bold;
+}
+.entry {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+.entry .date {
+    font-size: 16px;
+    color: #333;
+    width: 20%;
+}
+.entry .user {
+    font-size: 16px;
+    color: #333;
+    width: 20%;
+}
+.entry .amount {
+    font-size: 16px;
+    color: #333;
+    width: 20%;
+}
+.entry .category {
+    font-size: 16px;
+    color: #555;
+    width: 40%;
+    text-align: left;
+}
+
+.income-amount {
+    color: rgb(0, 0, 203); /* 収入の色 */
+}
+.expenditure-amount {
+    color: red; /* 支出の色 */
+}

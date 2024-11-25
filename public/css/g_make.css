@@ -1,0 +1,60 @@
+/* ベースのスタイル */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #c6e2ff, #9fd8df, #b6d6a8);
+    font-family: Arial, sans-serif;
+}
+
+/* 共通コンテナスタイル */
+.creation-container, .creation-complete-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 330px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* タイトル */
+.creation-container h1, .creation-complete-container h1 {
+    font-size: 1.8em;
+    color: #3a3a3a;
+    margin-bottom: 20px;
+}
+
+/* 入力フィールドのスタイル */
+input[type="text"], input[type="password"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #000;
+    box-sizing: border-box;
+}
+
+/* ボタンのスタイル */
+.action-button, .action-link {
+    display: block;
+    width: 80%;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 20px auto;
+}
+
+.action-button:hover, .action-link:hover {
+    background-color: #2e225e;
+}
