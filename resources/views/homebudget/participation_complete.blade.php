@@ -71,6 +71,11 @@
             </select>
             <button type="submit">TOPへ</button>
         </form>
+
+        <!-- 新規ユーザー登録リンク -->
+        <a href="{{ route('user.register.form') }}" class="btn btn-link">新規ユーザー追加</a>
+
+
     </div>
 </body>
 </html>
