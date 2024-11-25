@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\HomebudgetController;
-use App\Models\HomeBudget;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\CombinedMeterController; // 追加
+
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,6 @@ Route::get('/', function () {
     return view('homebudget.index');
 });
 
-
 Route::get('/', [HomebudgetController::class, 'index'])->name('index');
 Route::get('/dashboard', [HomebudgetController::class, 'dashboard'])->name('dashboard');
 Route::post('/post', [HomebudgetController::class, 'store'])->name('store');
@@ -36,7 +36,6 @@ Route::post('/groups/confirm', [GroupController::class, 'confirm'])->name('group
 Route::post('/participation/save-user', [HomebudgetController::class, 'participation_save_user'])->name('participation.save_user');
 
 // 参加フォームを表示
-// Route::get('/participation', [HomebudgetController::class, 'participation_form'])->name('participation_form');
 Route::get('/participation', [HomebudgetController::class, 'participation_form'])->name('participation.form');
 
 // 確認画面を表示
@@ -45,3 +44,7 @@ Route::post('/participation/confirm', [HomebudgetController::class, 'participati
 // 完了画面を表示
 Route::post('/participation/complete', [HomebudgetController::class, 'participation_complete'])->name('participation.complete');
 
+// ----------------------------------------
+// Combined Meter Route を追加
+// ----------------------------------------
+Route::get('/combined-meter', [CombinedMeterController::class, 'index'])->name('combined.meter');
