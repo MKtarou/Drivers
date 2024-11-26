@@ -1,10 +1,9 @@
-<!-- ファイルパス: resources/views/homebudget/g_make.blade.php -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{asset('css/g_make.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/g_make.css') }}">
     <title>グループの作成</title>
 </head>
 <body>
@@ -16,18 +15,10 @@
                 @csrf
                 <input type="hidden" name="name" value="{{ session('name') }}">
                 <input type="hidden" name="password" value="{{ session('password') }}">
+                <input type="hidden" name="goal" value="{{ session('goal') }}">
                 <button type="submit" class="action-button">はい</button>
             </form>
             <a href="{{ route('groups.create') }}" class="action-link">いいえ</a>
-        </div>
-    @elseif(session('complete'))
-        <!-- グループ作成完了画面 -->
-        <div class="creation-complete-container">
-            <h1>グループの作成が完了しました</h1>
-            <p>グループ名: {{ session('name') }}</p>
-            <p>パス: {{ session('password') }}</p>
-            <p>目標金額: {{ session('goal') }}</p>
-            <p>グループが正常に作成されました！</p>
         </div>
     @else
         <!-- グループ作成フォーム -->

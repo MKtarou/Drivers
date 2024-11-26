@@ -205,7 +205,7 @@ class HomebudgetController extends Controller
         // グループを取得
         $group = Groups::where('group_id', $groupId)->first();
 
-        // グループが存在しない場合は `nogroup` ビューを表示
+        // グループが存在しな場合は `nogroup` ビューを表示
         if (!$group) {
             return view('homebudget.nogroup');
         }
