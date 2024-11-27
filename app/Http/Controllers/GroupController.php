@@ -40,20 +40,40 @@ class GroupController extends Controller
         $password = session('password');
         $goal = session('goal');
 
+        // ランダムな6文字の大文字英数字を生成
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $invitationCode = '';
+        for ($i = 0; $i < 6; $i++) {
+            $invitationCode .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
         // 新しいグループを作成して保存
         $group = new Groups();
         $group->g_name = $name;
         $group->g_pass = $password;
         $group->g_goal = $goal;
+        $group->Invitation_code = $invitationCode; // Invitation_codeを設定
         $group->save();
 
+        // 作成したグループIDをセッションに保存
+        session([
+            'groupId' => $group->group_id,
+        ]);
+
+        // 新規ユーザー登録画面にリダイレクト
+        return redirect()->route('user.register.form')->with([
+            'success' => 'グループが正常に作成されました。新規ユーザーを登録してください。',
+        ]);
+        
         return redirect()->route('groups.create')->with([
             'complete' => true,
             'name' => $name,
             'password' => $password,
             'goal' => $goal,
+            'invitationCode' => $invitationCode, // Invitation_codeをセッションに追加
+
+            
         ]);
     }
+
 }
-
-

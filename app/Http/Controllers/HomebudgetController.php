@@ -16,9 +16,30 @@ class HomebudgetController extends Controller
      */
     public function index(Request $request)
     {
-        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
-        $userId = session('userId'); // これでセッションからユーザーIDを取得できます
+        $groupId = session('groupId', 1); // 例: デフォルト値として1を設定
+        $userId = session('userId', 1);  // 例: デフォルト値として1を設定
 
+        // グループ情報を取得してセッションに保存
+        $group = Groups::find($groupId);
+        if ($group) {
+            session([
+                'group_name' => $group->g_name,
+                'group_limit' => $group->g_limit,
+                'group_savings' => $group->g_goal,
+            ]);
+        }
+
+        // ユーザー情報を取得してセッションに保存
+        $user = Users::find($userId);
+        if ($user) {
+            session([
+                'name' => $user->u_name,
+                'limit' => $user->u_limit,
+                'savings' => $user->u_goal,
+            ]);
+        }
+
+        
         // グループを取得
         $group = Groups::where('group_id', $groupId)->first();
 
@@ -85,8 +106,7 @@ class HomebudgetController extends Controller
             'category' => 'required_if:transaction_type,expense|numeric'
         ]);
 
-        $groupId = 1;
-        $request->session()->put('group_id', $groupId);
+        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
 
         $homeBudget = new HomeBudget();
         $homeBudget->date = $request->date;
@@ -162,8 +182,7 @@ class HomebudgetController extends Controller
 
     public function dashboard(Request $request)
     {
-        $groupId = 1; // セッションからグループIDを取得または固定
-        $group = Groups::where('group_id', $groupId)->first();
+        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
 
         $groupName = $group ? $group->g_name : 'グループ名不明';
 
@@ -181,6 +200,16 @@ class HomebudgetController extends Controller
 
     public function calendar(Request $request)
     {
+        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+
+        // グループを取得
+        $group = Groups::where('group_id', $groupId)->first();
+
+        // グループが存在しな場合は `nogroup` ビューを表示
+        if (!$group) {
+            return view('homebudget.nogroup');
+        }
+
         $currentMonth = $request->query('month', date('m'));
         $currentYear = $request->query('year', date('Y'));
 
@@ -191,6 +220,7 @@ class HomebudgetController extends Controller
                          SUM(CASE WHEN hb.price < 0 THEN hb.price ELSE 0 END) as total_expenditure,
                          hb.details,
                          u.u_name as user_name')
+            ->where('hb.group_id', $groupId)
             ->whereMonth('hb.date', $currentMonth)
             ->whereYear('hb.date', $currentYear)
             ->groupBy('day', 'hb.details', 'u.u_name')
@@ -222,6 +252,15 @@ class HomebudgetController extends Controller
 
     public function balance(Request $request)
     {
+        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+
+        // グループを取得
+        $group = Groups::where('group_id', $groupId)->first();
+
+        // グループが存在しない場合は `nogroup` ビューを表示
+        if (!$group) {
+            return view('homebudget.nogroup');
+        }
         $month = $request->query('month', date('m'));
         $year = $request->query('year', date('Y'));
 
@@ -229,6 +268,7 @@ class HomebudgetController extends Controller
         $entries = DB::table('home_budgets as hb')
             ->join('users as u', 'hb.user_id', '=', 'u.user_id')
             ->selectRaw("DATE_FORMAT(hb.date, '%Y/%m/%d') as date, hb.price, hb.details, u.u_name as user_name")
+            ->where('hb.group_id', $groupId)
             ->whereMonth('hb.date', $month)
             ->whereYear('hb.date', $year)
             ->get();
