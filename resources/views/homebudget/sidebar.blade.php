@@ -23,28 +23,25 @@
     border-radius: 10px;
   } */
 
-.active {
+/* .active {
 outline: dashed red;
-}
+} */
 
 .bm-menu {
     background-color: purple !important;
 }
-
-#logout {
-    display: block;
-    margin-top: 20px;
-    text-align: center;
-    padding: 10px;
-    background-color: #dc3545;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-#logout:hover {
-    background-color: #c82333;
+/* .bm-item-list{
+    display: flex !important; 
+    flex-direction: column !important;
+    justify-content: space-between !important;
+} */
+.bm-item-list > * {
+      display: flex;
+      text-decoration: none;
+      padding: 0.7em;
+    }
+.logout-link{
+    margin-top: 425px;
 }
 </style>
 
@@ -63,11 +60,31 @@ outline: dashed red;
             <a id="contact" href="{{ route('setting.index') }}">
                 <span>設定</span>
             </a>
-            <div style="margin-top: auto; padding: 10px;">
-                <a id="logout" href="{{ route('logout') }}" class="btn btn-danger btn-block">
-                    ログアウト
-                </a>
-            </div>
+            <a id="" class="logout-link" href="{{ route('logout') }}">
+                <span>ログアウト</span>
+            </a>
+
+            <!-- <div class="logout-link"> -->
+                <!-- <div>
+                    <a id="home" href="{{ route('index') }}">
+                        <span>Home</span>
+                    </a>
+                    <a id="about" href="{{ route('calendar') }}">
+                        <span>カレンダー</span>
+                    </a>
+                    <a id="contact" href="{{ route('balance') }}">
+                        <span>月間収支</span>
+                    </a>
+                    <a id="contact" href="{{ route('setting.index') }}">
+                        <span>設定</span>
+                    </a>
+                </div>
+                <div>
+                    <a id="" href="{{ route('logout') }}">
+                        <span>ログアウト</span>
+                    </a>
+                </div> -->
+            <!-- </div> -->
             </component>
         </div>
 </div>
