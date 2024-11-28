@@ -50,10 +50,10 @@
                     transactions[day].forEach(entry => {
                         if (entry.total_income !== 0 || entry.total_expenditure !== 0) {
                             cell.innerHTML += `
-                                <div>${entry.user_name || ''}</div>
-                                ${entry.total_income !== 0 ? `<div>+${formatNumber(entry.total_income)}</div>` : ''}
-                                ${entry.total_expenditure !== 0 ? `<div>-${formatNumber(Math.abs(entry.total_expenditure))}</div>` : ''}
-                                ${entry.details ? `<div class="details-text">${entry.details}</div>` : ''}
+                                <div>${entry.user_name || ''}
+                                ${entry.total_income !== 0 ? `+${formatNumber(entry.total_income)}` : ''}
+                                ${entry.total_expenditure !== 0 ? `-${formatNumber(Math.abs(entry.total_expenditure))}` : ''}
+                                ${entry.details ? `${entry.details}</div>` : ''}
                             `;
                         }
                     });

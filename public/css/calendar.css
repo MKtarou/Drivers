@@ -1,134 +1,173 @@
-        /* 全体のスタイル設定 */
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            box-sizing: border-box;
-        }
+/* 全体のスタイル設定 */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f3e7ff; /* 薄紫色の背景 */
+    box-sizing: border-box;
+    color: #4b3f72; /* ダーク紫色の文字 */
+}
 
-        h1 {
-            font-size: 2vh;
-            margin: 10px 0;
-        }
+/* ヘッダー */
+h1 {
+    font-size: 3vh;
+    margin: 1px;
+    color: #9b7bc1; /* 紫色 */
+}
 
-        .calendar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 95%;
-            max-width: 900px;
-        }
+/* カレンダーコンテナ */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 1100px;
+}
 
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            width: 100%;
-            background-color: #ddd;
-            font-size: 1.2vh;
-        }
+/* カレンダーグリッド */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    width: 100%;
+    background-color: #ddd;
+    font-size: 1.2vh;
+}
 
-        .day-label {
-            padding: 0.5vh 0;
-            text-align: center;
-            font-weight: bold;
-            color: white;
-            font-size: 1.5vh;
-        }
+/* 曜日ラベル */
+.day-label {
+    padding: 0.5vh 0;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    font-size: 1.5vh;
+}
 
-        .sunday-label { background-color: #ffcccc; }
-        .saturday-label { background-color: #cce5ff; }
-        .weekday-label { background-color: #f8f8f8; color: #555; }
+.sunday-label {
+    background-color: #ffcccc; /* 日曜日の背景色 */
+    color: #ff0000; /* 日曜日の文字色 */
+}
 
-        .calendar-day {
-            border: 1px solid #ccc;
-            padding: 0.5vh;
-            min-height: 8vh;
-            text-align: left;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            box-sizing: border-box;
-            overflow: hidden;
-            font-size: 1.2vh;
-        }
+.saturday-label {
+    background-color: #cce5ff; /* 土曜日の背景色 */
+    color: #0015ff; /* 土曜日の文字色 */
+}
 
-        .calendar-day strong {
-            display: block;
-            text-align: right;
-            color: #333;
-        }
+.weekday-label {
+    background-color: #f8f8f8; /* 平日の背景色 */
+    color: #555;
+}
 
-        .calendar-day div {
-            font-size: 1.2vh;
-            color: #555;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-height: 6vh;
-            overflow-y: auto;
-        }
+/* 日付セル */
+.calendar-day {
+    border: 1px solid #ccc;
+    padding: 0.5vh;
+    min-height: 12vh;
+    max-height: 12vh;
+    text-align: left;
+    background-color: #ffffff; /* 白い背景 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 2.2vh;
+}
 
-        .saturday { color: blue; }
-        .sunday, .holiday { color: red; }
+/* 日付を太字で表示 */
+.calendar-day strong {
+    display: block;
+    text-align: right;
+    color: #333; /* ダークグレー */
+}
 
-        .controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1vw;
-            margin: 1vh 0;
-        }
+/* 取引の表示スタイル */
+.calendar-day div {
+    font-size: 1.5vh;
+    color: #555;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-height: 4vh;
+    overflow-y: auto;
+}
 
-        .controls span {
-            font-size: 2vh;
-            font-weight: bold;
-        }
+/* 土日や祝日の文字色 */
+.saturday {
+    color: #0015ff; /* 土曜日の文字色 */
+}
 
-        .controls button {
-            background: none;
-            border: none;
-            font-size: 2vh;
-            cursor: pointer;
-            padding: 0 1vw;
-        }
+.sunday, .holiday {
+    color: #ff0000; /* 日曜日と祝日の文字色 */
+}
 
-        .summary-container {
-            display: flex;
-            justify-content: center;
-            gap: 2vw;
-            margin-top: 1vh;
-            width: 100%;
-        }
+/* カレンダー操作ボタン */
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+    margin: 1vh 0;
+}
 
-        .summary-box {
-            padding: 1vh;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            text-align: center;
-            width: 20vw;
-            background-color: #f9f9f9;
-        }
+.controls span {
+    font-size: 2vh;
+    font-weight: bold;
+    color: #9b7bc1; /* 紫色 */
+}
 
-        .summary-box h2 {
-            font-size: 1.5vh;
-            color: #555;
-            margin-bottom: 1vh;
-        }
+.controls button {
+    background: none;
+    border: none;
+    font-size: 2vh;
+    cursor: pointer;
+    padding: 0 1vw;
+    color: #9b7bc1; /* ボタン文字色 */
+    transition: color 0.3s, border-color 0.3s;
+}
 
-        .summary-box p {
-            font-size: 2.5vh;
-            font-weight: bold;
-            color: #333;
-        }
+.controls button:hover {
+    color: #7b2c8f; /* ホバー時の色変更 */
+    border-color: #9b7bc1; /* ボーダー色変更 */
+}
 
-        .calendar-day span {
-            display: inline;
-        }
-        
+/* サマリーボックス */
+.summary-container {
+    display: flex;
+    justify-content: center;
+    gap: 2vw;
+    margin-top: 2vh;
+    height: 90px;
+    width: 70%;
+}
+
+.summary-box {
+    padding: 1vh;
+    border: 1px solid #9b7bc1; /* 紫色のボーダー */
+    border-radius: 8px;
+    text-align: center;
+    height: 90px;
+    width: 25vw;
+    background-color: #f9f9f9;
+}
+
+.summary-box h2 {
+    font-size: 2vh;
+    color: #9b7bc1; /* 紫色 */
+    margin-bottom: 1vh;
+}
+
+.summary-box p {
+    font-size: 3.5vh;
+    font-weight: bold;
+    color: #333; /* ダークグレー */
+}
+
+/* カレンダーの日付にトランザクションがある場合 */
+.calendar-day span {
+    display: inline;
+}
