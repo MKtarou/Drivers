@@ -100,6 +100,8 @@
     </style>
 </head>
 <body>
+
+@include('homebudget.sidebar')
     <div class="container">
         <!-- タブ -->
         <div class="tabs">
@@ -122,9 +124,9 @@
                     <h2>使用限度額メーター</h2>
                         <canvas id="personalLimitMeter"></canvas>
 
-                        <!-- <p>使用限度{{ $u_limit }}円</p>
+                        <p>使用限度{{ $u_limit }}円</p>
                         <p>現在使用額{{ $personalExpense * -1 }}円</p>
-                        <p>残りの使用可能額{{ $u_limit + $personalExpense }} 円</p> -->
+                        <p>残りの使用可能額{{ $u_limit + $personalExpense }} 円</p>
                         
                     </div>
                     <div class="meter">
@@ -228,7 +230,7 @@
             data: {
                 labels: ['使用済み', '残額'],
                 datasets: [{
-                    data: [personalExpense, -uLimit - personalExpense],
+                    data: [personalExpense, -uLimit + personalExpense],
                     backgroundColor: ['#FF6384', '#E0E0E0']
                 }]
             },
@@ -252,9 +254,9 @@
         new Chart(document.getElementById('teamLimitMeter'), {
             type: 'doughnut',
             data: {
-                labels: ['使用済み', '残額'],
+                labels: ['使用済み'+teamExpense + '円', '使用限度'+gLimit+'円'],
                 datasets: [{
-                    data: [teamExpense,  -gLimit - teamExpense],
+                    data: [teamExpense,  -gLimit-teamExpense],
                     backgroundColor: ['#FF6384', '#E0E0E0']
                 }]
             },
