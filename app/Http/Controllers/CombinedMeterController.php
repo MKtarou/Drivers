@@ -11,8 +11,8 @@ class CombinedMeterController extends Controller
 {
     public function index()
     {
-        $groupId = session('groupId', 1); // グループID（例: セッションから取得）
-        $userId = session('userId', 1);  // ユーザーID（例: セッションから取得）
+        $groupId = session('groupId'); // グループID（例: セッションから取得）
+        $userId = session('userId');  // ユーザーID（例: セッションから取得）
 
         // グループ情報を取得
         $group = Groups::where('group_id', $groupId)->first();

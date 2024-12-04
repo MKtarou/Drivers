@@ -16,8 +16,8 @@ class HomebudgetController extends Controller
      */
     public function index(Request $request)
     {
-        $groupId = session('groupId', 1); // 例: デフォルト値として1を設定
-        $userId = session('userId', 1);  // 例: デフォルト値として1を設定
+        $groupId = session('groupId'); // 例: デフォルト値として1を設定
+        $userId = session('userId');  // 例: デフォルト値として1を設定
 
         // グループ情報を取得してセッションに保存
         $group = Groups::find($groupId);

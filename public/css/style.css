@@ -419,3 +419,27 @@ background: #f2f2f2;
     height: 300px;
 }
 
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    background-color: #9b59b6;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    background-color: #9b59b6;
+    transition: background-color 0.3s;
+}
+
+.tab:hover, .tab.active {
+    background-color: #7d3c98;
+}

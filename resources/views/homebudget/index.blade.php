@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <h1>{{ $groupName }}の家計簿</h1>
+        <h1>{{ $groupName }}</h1>
         <!-- <nav>
             <a href="{{ route('dashboard') }}">ダッシュボード</a>
         </nav> -->
@@ -84,25 +84,26 @@
 
         <div class="add-balance">
             <h3>収支の追加</h3>
-            <div class="toggle-container">
-                <input type="checkbox" id="transactionToggle" onchange="toggleTransactionType()" />
-                <label for="transactionToggle" class="toggle-label">
-                    <span class="toggle-income">収入</span>
-                    <span class="toggle-slider"></span>
-                    <span class="toggle-expense">支出</span>
-                </label>
+
+            <!-- 収入・支出切り替えタブ -->
+            <div class="tabs">
+                <div class="tab active" data-type="expense">支出</div>
+                <div class="tab" data-type="income">収入</div>
             </div>
 
+            <!-- 収支フォーム -->
             <form id="balanceForm" action="{{ route('store') }}" method="POST">
                 @csrf
                 <input type="hidden" id="transactionType" name="transaction_type" value="expense">
+
+                <!-- 日付 -->
                 <label for="date">日付:</label>
                 <input type="date" id="date" name="date">
                 @if($errors->has('date')) <span class="error">{{ $errors->first('date') }}</span> @endif
 
+                <!-- カテゴリ（支出用） -->
                 <div id="categorySection">
                     <label for="category">カテゴリ:</label>
-                    <br>
                     <select name="category" id="category">
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -111,10 +112,12 @@
                     @if($errors->has('category')) <span class="error">{{ $errors->first('category') }}</span> @endif
                 </div>
 
+                <!-- 詳細 -->
                 <label for="details">詳細:</label>
                 <textarea id="details" name="details"></textarea>
                 @if($errors->has('details')) <span class="error">{{ $errors->first('details') }}</span> @endif
 
+                <!-- ユーザー -->
                 <label for="user">ユーザー:</label>
                 <select name="user_id" id="user_id">
                     @foreach($users as $user)
@@ -123,14 +126,15 @@
                 </select>
                 @if($errors->has('user_id')) <span class="error">{{ $errors->first('user_id') }}</span> @endif
 
+                <!-- 金額 -->
                 <label for="price">金額:</label>
-                <input type="text" id="price" name="price">
+                <input type="number" id="price" name="price">
                 @if($errors->has('price')) <span class="error">{{ $errors->first('price') }}</span> @endif
 
                 <button type="submit">追加</button>
             </form>
 
-            <canvas id="categoryChart" ></canvas>
+            <canvas id="categoryChart"></canvas>
         </div>
     </section>
 </body>
@@ -189,18 +193,35 @@
     });
 
 
-    function toggleTransactionType() {
-        const transactionType = document.getElementById('transactionType');
-        const categorySection = document.getElementById('categorySection');
-        const toggle = document.getElementById('transactionToggle');
+    // function toggleTransactionType() {
+    //     const transactionType = document.getElementById('transactionType');
+    //     const categorySection = document.getElementById('categorySection');
+    //     const toggle = document.getElementById('transactionToggle');
 
-        if (toggle.checked) {
-            transactionType.value = 'income';
-            categorySection.style.display = 'none';
-        } else {
-            transactionType.value = 'expense';
-            categorySection.style.display = 'block';
-        }
-    }
+    //     if (toggle.checked) {
+    //         transactionType.value = 'income';
+    //         categorySection.style.display = 'none';
+    //     } else {
+    //         transactionType.value = 'expense';
+    //         categorySection.style.display = 'block';
+    //     }
+    // }
+
+    // タブ切り替え機能
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const transactionType = tab.getAttribute('data-type');
+            document.getElementById('transactionType').value = transactionType;
+
+            // カテゴリセクションの表示/非表示
+            if (transactionType === 'income') {
+                document.getElementById('categorySection').style.display = 'none';
+             } else {
+                document.getElementById('categorySection').style.display = 'block';
+             }
+        });
+    });
 
 </script>

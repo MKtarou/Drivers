@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();    
         Paginator::useBootstrapFour();
-        //View::share('categories', $this->shareCategories());
+        View::share('categories', $this->shareCategories());
     }
 
     private function shareCategories() {
