@@ -42,6 +42,7 @@ outline: dashed red;
     }
 .logout-link{
     margin-top: 90%;
+    margin-top: 400px;
 }
 </style>
 
@@ -57,9 +58,15 @@ outline: dashed red;
             <a id="contact" href="{{ route('balance') }}">
                 <span>月間収支</span>
             </a>
+            <a id="contact" href="{{ route('combined.meter') }}">
+                <span>貯金・使用限度確認</span>
+            </a>
+
+
             <a id="contact" href="{{ route('setting.index') }}">
                 <span>設定</span>
             </a>
+            
             <a id="" class="logout-link" href="{{ route('logout') }}">
                 <span>ログアウト</span>
             </a>
