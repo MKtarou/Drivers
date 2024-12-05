@@ -25,7 +25,6 @@ Route::get('/', function () {
 });
 
 Route::get('/', [HomebudgetController::class, 'index'])->name('index');
-Route::get('/dashboard', [HomebudgetController::class, 'dashboard'])->name('dashboard');
 Route::post('/post', [HomebudgetController::class, 'store'])->name('store');
 Route::get('/edit/{id}', [HomebudgetController::class, 'edit'])->name('homebudget.edit');
 Route::put('/update', [HomebudgetController::class, 'update'])->name('homebudget.update');
@@ -50,13 +49,25 @@ Route::get('/setting', [SettingController::class, 'index'])->name('setting.index
 Route::post('/setting/personal', [SettingController::class, 'updatePersonal'])->name('setting.update.personal');
 Route::post('/setting/group', [SettingController::class, 'updateGroup'])->name('setting.update.group');
 
-Route::group(['middleware' => ['storeGroupId']], function () {
-    // このグループ内のすべてのルートにミドルウェアが適用されます
-    Route::get('/dashboard', [HomebudgetController::class, 'dashboard'])->name('dashboard');
-    // その他のルート
+//グループIdとユーザーIdのセッションが切れていた場合nogroupに遷移するセッションチェックのミドルウェア
+Route::group(['middleware' => ['checkGroupAndUser']], function () {
+    //初期画面でセッションが切れていた場合のルート
+    Route::get('/', [HomebudgetController::class, 'index'])->name('index');
+    //更新画面でセッションが切れていた場合のルート
+    Route::get('/edit/{id}', [HomebudgetController::class, 'edit'])->name('homebudget.edit');
+    //カレンダー画面でセッションが切れていた場合のルート
+    Route::get('/calendar', [HomebudgetController::class, 'calendar'])->name('calendar');
+    //収支一覧画面でセッションが切れていた場合のルート
+    Route::get('/balance', [HomebudgetController::class, 'balance'])->name('balance');
+    //設定画面でセッションが切れていた場合のルート
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+    //メータ画面でセッションが切れていた場合のルート
+    Route::get('/combined-meter', [CombinedMeterController::class, 'index'])->name('combined.meter');
+    
 });
 
-Route::get('/test-session', [TestController::class, 'checkSession']);
+
+//Route::get('/test-session', [TestController::class, 'checkSession']);
 
 
 // 参加フォームを表示
@@ -72,6 +83,7 @@ Route::post('/participation/complete', [HomebudgetController::class, 'participat
 // Combined Meter Route を追加
 // ----------------------------------------
 Route::get('/combined-meter', [CombinedMeterController::class, 'index'])->name('combined.meter');
+
 
 //ログアウト処理
 Route::get('/logout', function () {

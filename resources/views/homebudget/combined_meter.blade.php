@@ -109,6 +109,12 @@
             <div class="tab" data-target="team">{{ $g_name }}のチームデータ</div>
         </div>
 
+        <div class="controls">
+            <a href="{{ route('combined.meter', ['month' => $month == 1 ? 12 : $month - 1, 'year' => $month == 1 ? $year - 1 : $year]) }}" class="control-btn">◀ 前月</a>
+            <span>{{ $year }}年 {{ $month }}月のデータ</span>
+            <a href="{{ route('combined.meter', ['month' => $month == 12 ? 1 : $month + 1, 'year' => $month == 12 ? $year + 1 : $year]) }}" class="control-btn">次月 ▶</a>
+        </div>
+
         <!-- 個人データ -->
         <div id="personal" class="content active">
             <div class="grid">
@@ -165,6 +171,9 @@
     </div>
 
     <script>
+
+        
+
         // タブ切り替え機能
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -188,6 +197,9 @@
         const gLimit = @json($g_limit);
         const gSaving = @json($g_savings);
         const uSaving = @json($u_savings);
+
+        const month = @json($month);
+        const year = @json($year);
 
         // グラフ描画
         const categoryColors = {
