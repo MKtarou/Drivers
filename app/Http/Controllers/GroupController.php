@@ -64,6 +64,14 @@ class GroupController extends Controller
         return redirect()->route('user.register.form')->with([
             'success' => 'グループが正常に作成されました。新規ユーザーを登録してください。',
         ]);
+
+
+        // リメンバー機能をチェック
+        if ($request->has('remember_me')) {
+            $rememberTime = 60 * 24 * 30; // 30日間（分単位）
+            Cookie::queue('groupId', $group->group_id, $rememberTime); // グループIDをクッキーに保存
+        }
+
         
         return redirect()->route('groups.create')->with([
             'complete' => true,
@@ -77,3 +85,4 @@ class GroupController extends Controller
     }
 
 }
+

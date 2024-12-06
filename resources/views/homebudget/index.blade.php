@@ -10,9 +10,6 @@
 <body>
     <header>
         <h1>{{ $groupName }}</h1>
-        <!-- <nav>
-            <a href="{{ route('dashboard') }}">ダッシュボード</a>
-        </nav> -->
     </header>
 
     
