@@ -158,6 +158,9 @@
                     <div class="meter">
                         <h2>使用限度額メーター</h2>
                         <canvas id="teamLimitMeter"></canvas>
+                        <p>使用限度{{ $g_limit }}円</p>
+                        <p>現在使用額{{ $teamExpense * -1 }}円</p>
+                        <p>残りの使用可能額{{ $g_limit + $teamExpense }} 円</p>
                         
                     </div>
                     <div class="meter">
