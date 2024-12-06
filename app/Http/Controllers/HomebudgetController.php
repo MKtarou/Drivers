@@ -103,34 +103,44 @@ class HomebudgetController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'date' => 'required|date',
-            'user_id' => 'required|numeric',
-            'price' => 'required|numeric',
-            'transaction_type' => 'required|string',
-            'details' => 'nullable|string',
-            'category' => 'required_if:transaction_type,expense|numeric'
-        ]);
+{
+    $validated = $request->validate([
+        'date' => 'required|date',
+        'user_id' => 'required|numeric',
+        'price' => [
+            'required',
+            'numeric',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->transaction_type === 'income' && $value < 0) {
+                    $fail('収入はプラスの値で入力してください');
+                }
+                if ($request->transaction_type === 'expense' && $value >= 0) {
+                    $fail('支出はマイナスの値で入力してください');
+                }
+            },
+        ],
+        'transaction_type' => 'required|string',
+        'details' => 'nullable|string',
+        'category' => 'required_if:transaction_type,expense|numeric',
+    ]);
 
-        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+    $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
 
-        $homeBudget = new HomeBudget();
-        $homeBudget->date = $request->date;
-        $homeBudget->group_id = $groupId;
-        $homeBudget->user_id = $request->user_id;
-        $homeBudget->price = $request->transaction_type === 'income' ? $request->price : -$request->price;
-        $homeBudget->details = $request->details;
+    $homeBudget = new HomeBudget();
+    $homeBudget->date = $request->date;
+    $homeBudget->group_id = $groupId;
+    $homeBudget->user_id = $request->user_id;
+    $homeBudget->price = $request->transaction_type === 'income' ? $request->price : -abs($request->price);
+    $homeBudget->details = $request->details;
 
-        // 支出の時のみカテゴリIDを保存
-        if ($request->transaction_type === 'expense') {
-            $homeBudget->category_id = $request->category;
-        }
-
-        $result = $homeBudget->save();
-        session()->flash('flash_message', $result ? '収支を登録しました。' : '収支を登録できませんでした。');
-        return redirect('/');
+    if ($request->transaction_type === 'expense') {
+        $homeBudget->category_id = $request->category;
     }
+
+    $result = $homeBudget->save();
+    session()->flash('flash_message', $result ? '収支を登録しました。' : '収支を登録できませんでした。');
+    return redirect('/');
+}
 
     /**
      * Display the specified resource.
@@ -152,27 +162,69 @@ class HomebudgetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
-    {
-        $validated = $request->validate([
-            'date' => 'required|date',
-            'category_id' => 'required|numeric',
-            'price' => 'required|numeric',
-        ]);
+    // public function update(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'date' => 'required|date',
+    //         'category_id' => 'required|numeric',
+    //         'price' => 'required|numeric',
+    //     ]);
 
-        $hasData = HomeBudget::where('id', '=', $request->id);
-        if ($hasData->exists()) {
-            $hasData->update([
-                'date' => $request->date,
-                'category_id' => $request->category_id,
-                'price' => $request->price
-            ]);
-            session()->flash('flash_message', '収支を更新しました。');
-        } else {
-            session()->flash('flash_error_message', '収支を更新できませんでした。');
-        }
+    //     $hasData = HomeBudget::where('id', '=', $request->id);
+    //     if ($hasData->exists()) {
+    //         $hasData->update([
+    //             'date' => $request->date,
+    //             'category_id' => $request->category_id,
+    //             'price' => $request->price
+    //         ]);
+    //         session()->flash('flash_message', '収支を更新しました。');
+    //     } else {
+    //         session()->flash('flash_error_message', '収支を更新できませんでした。');
+    //     }
     
-        return redirect('/');
+    //     return redirect('/');
+    // }
+    public function update(Request $request)
+{
+    $validated = $request->validate([
+        'date' => 'required|date',
+        'category_id' => 'required|numeric',
+        'price' => [
+            'required',
+            'numeric',
+            function ($attribute, $value, $fail) use ($request) {
+                $homeBudget = HomeBudget::find($request->id);
+
+                if (!$homeBudget) {
+                    $fail('収支データが見つかりません。');
+                    return;
+                }
+
+                if ($homeBudget->price > 0 && $value < 0) {
+                    $fail('収入はプラスの値で入力してください');
+                }
+
+                if ($homeBudget->price < 0 && $value >= 0) {
+                    $fail('支出はマイナスの値で入力してください');
+                }
+            },
+        ],
+    ]);
+
+    $homeBudget = HomeBudget::find($request->id);
+
+    if ($homeBudget) {
+        $homeBudget->update([
+            'date' => $request->date,
+            'category_id' => $request->category_id,
+            'price' => $homeBudget->price < 0 ? -abs($request->price) : abs($request->price),
+        ]);
+        session()->flash('flash_message', '収支を更新しました。');
+    } else {
+        session()->flash('flash_error_message', '収支を更新できませんでした。');
+    }
+
+    return redirect('/');
     }
 
     /**
