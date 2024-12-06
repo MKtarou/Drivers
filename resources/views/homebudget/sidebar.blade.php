@@ -41,6 +41,7 @@ outline: dashed red;
       padding: 0.7em;
     }
 .logout-link{
+    margin-top: 90%;
     margin-top: 400px;
 }
 </style>
