@@ -67,8 +67,13 @@
             <input type="password" name="u_pass" placeholder="パスワード" required>
             <input type="number" name="u_goal" placeholder="目標金額" required>
             <input type="number" name="u_limit" placeholder="月限度額" required>
+            <label>
+                <input type="checkbox" name="remember_me" value="1">
+                30日間ログイン情報を保持する
+            </label>
             <button type="submit">登録</button>
         </form>
+
     </div>
 </body>
 </html>

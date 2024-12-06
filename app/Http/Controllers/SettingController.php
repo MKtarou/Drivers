@@ -8,6 +8,13 @@ use App\Models\Users;
 
 class SettingController extends Controller
 {
+
+    //セッションチェック
+    public function __construct()
+    {
+        $this->middleware('checkGroupAndUser');
+    }
+
     public function index()
     {
         return view('Homebudget.setting');
