@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\HomeBudget;
@@ -11,9 +12,15 @@ use App\Models\Users;
 
 class HomebudgetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    //セッションチェック
+    public function __construct()
+    {
+        $this->middleware('checkGroupAndUser')->except('participation_form','participation_confirm',
+                                                        'participation_complete','participation_save_user');
+    }
+
+
     public function index(Request $request)
     {
         $groupId = session('groupId'); // 例: デフォルト値として1を設定
@@ -43,10 +50,10 @@ class HomebudgetController extends Controller
         // グループを取得
         $group = Groups::where('group_id', $groupId)->first();
 
-        // グループが存在しない場合は `nogroup` ビューを表示
-        if (!$group) {
-            return view('homebudget.nogroup');
-        }
+        // // グループが存在しない場合は `nogroup` ビューを表示
+        // if (!$group) {
+        //     return view('homebudget.nogroup');
+        // }
 
         $groupName = $group->g_name;
 
@@ -344,17 +351,39 @@ class HomebudgetController extends Controller
     }
 
     // TOP遷移時にユーザーをセッションに保存
-    public function participation_save_user(Request $request){
-        // 選択されたユーザーIDを検証
+    public function participation_save_user(Request $request)
+    {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,user_id', // ユーザーIDが存在するか確認
         ]);
 
-        // ユーザーIDをセッションに保存
-        session(['userId' => $validated['user_id']]);
+        // ユーザー情報を取得
+        $user = Users::find($validated['user_id']);
+        $groupId = session('groupId'); // セッションからグループIDを取得
+        $group = Groups::find($groupId); // グループ情報を取得
+
+        if (!$user || !$group) {
+            return redirect()->route('nogroup')
+                ->withErrors('ユーザーまたはグループ情報が見つかりませんでした。');
+        }
+
+        // ユーザーIDとグループIDをセッションに保存
+        session([
+            'userId' => $user->user_id,
+            'groupId' => $group->group_id,
+        ]);
+
+        // チェックボックスが選択されている場合のみクッキーを保存
+        if ($request->has('remember')) {
+            $rememberTime = 60 * 24 * 30; // 30日間（分単位）
+            Cookie::queue('userId', $user->user_id, $rememberTime);
+            Cookie::queue('groupId', $group->group_id, $rememberTime);
+        }
 
         // TOPページへリダイレクト
-        return redirect()->route('index')->with('flash_message', 'ユーザーが選択されました。');
+        return redirect()->route('index')
+            ->with('flash_message', 'ユーザーが選択されました。');
     }
+
 
 }

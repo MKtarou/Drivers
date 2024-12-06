@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Users;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class UserController extends Controller
 {
@@ -36,30 +38,34 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // セッションからgroup_idを取得
         $groupId = session('groupId');
         if (!$groupId) {
             return redirect()->route('nogroup')->withErrors('グループIDが見つかりません。');
         }
 
-        // バリデーション
         $validated = $request->validate([
             'u_name' => 'required|string|max:20',
             'u_pass' => 'required|string|max:10',
             'u_goal' => 'nullable|numeric',
             'u_limit' => 'nullable|numeric',
+            'remember_me' => 'nullable|boolean', // Remember Me のバリデーション
         ]);
 
-        // 新規ユーザーを作成
         $user = new Users();
         $user->group_id = $groupId;
         $user->u_name = $validated['u_name'];
-        $user->u_pass = $validated['u_pass'];
+        $user->u_pass = $validated['u_pass']; 
         $user->u_goal = $validated['u_goal'];
         $user->u_limit = $validated['u_limit'];
         $user->save();
 
-        // 作成したユーザーをセッションに保存
+        // Remember Me 機能の処理
+        if ($request->filled('remember_me')) {
+            $rememberTime = 60 * 24 * 30; // 30日間（分単位）
+            Cookie::queue('userId', $user->user_id, $rememberTime); // ユーザーIDを保存
+            Cookie::queue('groupId', $groupId, $rememberTime); // グループIDを保存
+        }
+
         session([
             'userId' => $user->user_id,
             'name' => $user->u_name,
