@@ -6,20 +6,21 @@
     <title>新規ユーザー登録</title>
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f9f9f9, #c6e2ff);
+            background-color: #f8f0fc;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
         .registration-container {
-            background-color: #ffffff;
+            background-color: #fff;
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             width: 350px;
             text-align: center;
         }
@@ -27,25 +28,41 @@
         .registration-container h1 {
             font-size: 1.8em;
             margin-bottom: 20px;
-            color: #007bff;
+            color: #9b59b6;
         }
 
         .registration-container form {
             display: flex;
             flex-direction: column;
+            align-items: stretch;
         }
 
-        .registration-container input {
+        .registration-container input[type="text"],
+        .registration-container input[type="password"],
+        .registration-container input[type="number"] {
             margin-bottom: 15px;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .registration-container label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .registration-container label input[type="checkbox"] {
+            margin-right: 5px;
         }
 
         .registration-container button {
             padding: 10px;
-            background-color: #007bff;
+            background-color: #9b59b6;
             color: white;
             border: none;
             border-radius: 5px;
@@ -54,7 +71,7 @@
         }
 
         .registration-container button:hover {
-            background-color: #0056b3;
+            background-color: #7d3c98;
         }
     </style>
 </head>
@@ -73,7 +90,6 @@
             </label>
             <button type="submit">登録</button>
         </form>
-
     </div>
 </body>
 </html>

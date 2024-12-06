@@ -5,53 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>参加完了</title>
     <style>
-        /* 背景と全体のレイアウト */
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #c6e2ff, #9fd8df, #b6d6a8);
+            background-color: #f8f0fc;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
-        /* グループ参加完了コンテナのスタイル */
         .join-confirm-container {
-            background-color: #ffffff;
-            width: 330px; /* コンテナの幅 */
-            padding: 40px; /* パディング */
+            background-color: #fff;
+            width: 330px;
+            padding: 40px;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
 
-        /* タイトルのスタイル */
         .join-confirm-container h1 {
-            color: #0d0d0e;
+            color: #9b59b6;
             font-size: 1.8em;
             margin-bottom: 20px;
+        }
+
+        .join-confirm-container p {
+            margin-bottom: 20px;
+        }
+
+        .join-confirm-container label {
+            display: block;
+            margin-top: 20px;
+            text-align: left;
+            font-size:14px;
         }
 
         select {
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            margin-bottom: 20px;
+            margin-top: 5px;
+            border-radius:5px;
+            border:1px solid #ccc;
         }
 
-        button {
-            background-color: #007bff;
+        .join-confirm-container button {
+            background-color: #9b59b6;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top:20px;
+            width:100%;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        .join-confirm-container button:hover {
+            background-color: #7d3c98;
         }
+
+        .join-confirm-container input[type="checkbox"] {
+            margin-right:5px;
+        }
+
+        .join-confirm-container a.btn-link {
+            display:inline-block;
+            margin-top:10px;
+            color:#9b59b6;
+            text-decoration:none;
+            font-size:14px;
+            transition: color 0.3s;
+        }
+
+        .join-confirm-container a.btn-link:hover {
+            color:#7d3c98;
+            text-decoration:underline;
+        }
+
     </style>
 </head>
 <body>
@@ -59,7 +91,6 @@
         <h1>グループへの参加が完了しました</h1>
         <p>グループ名: {{ $name }}</p>
 
-        <!-- ユーザー選択フォーム -->
         <form action="{{ route('participation.save_user') }}" method="post">
             @csrf
             <label for="user_id">ユーザーを選択してください:</label>
@@ -69,18 +100,14 @@
                     <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
                 @endforeach
             </select>
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 10px; text-align:left;">
                 <input type="checkbox" id="remember" name="remember">
-                <label for="remember">30日間ログイン情報を保持する</label>
+                <label for="remember" style="display:inline; font-size:14px;">30日間ログイン情報を保持する</label>
             </div>
             <button type="submit">TOPへ</button>
         </form>
 
-
-        <!-- 新規ユーザー登録リンク -->
-        <a href="{{ route('user.register.form') }}" class="btn btn-link">新規ユーザー追加</a>
-
-
+        <a href="{{ route('user.register.form') }}" class="btn-link">新規ユーザー追加</a>
     </div>
 </body>
 </html>

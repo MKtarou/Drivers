@@ -2,48 +2,32 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
 
 <style>
-    #app {
-    padding-top:0px;
-    padding-left:0px;
-  }
-
-/* button {
-    float:left;
-    height: 100px;
-    width: 18%;
-    margin: 3px;
-    background-color: #62caaa;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    border: 2px solid #fff;
-    font-size: 20px;
-    border-radius: 10px;
-  } */
-
-/* .active {
-outline: dashed red;
-} */
-
-.bm-menu {
+    .bm-menu {
     background-color: purple !important;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 画面全体の高さを確保（必要に応じて調整） */
 }
-/* .bm-item-list{
-    display: flex !important; 
-    flex-direction: column !important;
-    justify-content: space-between !important;
-} */
+
+.bm-item-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* 高さを埋める */
+    /* 他のスタイルがあれば残す */
+}
+
 .bm-item-list > * {
-      display: flex;
-      text-decoration: none;
-      padding: 0.7em;
-    }
-.logout-link{
-    margin-top: 90%;
-    margin-top: 400px;
+    display: flex;
+    text-decoration: none;
+    padding: 0.7em;
+    color: #fff;
 }
+
+.logout-link {
+    margin-top: auto; /* これによりログアウトリンクが下部に固定される */
+    margin-bottom: 85px;
+}
+
 </style>
 
 <div id="app">
@@ -61,8 +45,6 @@ outline: dashed red;
             <a id="contact" href="{{ route('combined.meter') }}">
                 <span>貯金・使用限度確認</span>
             </a>
-
-
             <a id="contact" href="{{ route('setting.index') }}">
                 <span>設定</span>
             </a>

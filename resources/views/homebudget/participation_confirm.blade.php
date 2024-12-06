@@ -5,36 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>グループ参加確認</title>
     <style>
-        /* 背景と全体のレイアウト */
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #c6e2ff, #9fd8df, #b6d6a8);
+            background-color: #f8f0fc;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
-        /* グループ参加コンテナのスタイル */
         .join-confirm-container {
-            background-color: #ffffff;
+            background-color: #fff;
             width: 330px;
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
 
-        /* タイトルのスタイル */
         .join-confirm-container h1 {
-            color: #0d0d0e;
+            color: #9b59b6;
             font-size: 1.8em;
             margin-bottom: 20px;
         }
 
-        /* ボタンリンクの共通スタイル */
-        .join-button-link {
+        .join-button-link, .join-confirm-container button[type="submit"] {
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -42,16 +39,17 @@
             height: 40px;
             font-size: 16px;
             color: white;
-            background-color: #007bff;
+            background-color: #9b59b6;
             border-radius: 5px;
             text-decoration: none;
-            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
             margin: 10px;
-            border: none; /* ふちの黒色を消す */
+            transition: background-color 0.3s;
         }
 
-        .join-button-link:hover {
-            background-color: #0056b3;
+        .join-button-link:hover, .join-confirm-container button[type="submit"]:hover {
+            background-color: #7d3c98;
         }
     </style>
 </head>
@@ -63,7 +61,7 @@
                 @csrf
                 <input type="hidden" name="name" value="{{ $name }}">
                 <input type="hidden" name="password" value="{{ $password }}">
-                <button type="submit" class="join-button-link">はい</button>
+                <button type="submit">はい</button>
             </form>
             <a href="{{ route('participation.form') }}" class="join-button-link">いいえ</a>
         </div>

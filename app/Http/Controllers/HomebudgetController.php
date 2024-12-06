@@ -300,7 +300,7 @@ class HomebudgetController extends Controller
             ];
         }
 
-        return view('Homebudget.calendar', [
+        return view('homebudget.calendar', [
             'transactions' => $groupedTransactions,
             'totalIncome' => $totalIncome,
             'totalExpenditure' => $totalExpenditure,
@@ -336,7 +336,7 @@ class HomebudgetController extends Controller
         $totalExpenditure = $entries->filter(fn($entry) => $entry->price < 0)->sum('price');
         $balance = $totalIncome + $totalExpenditure;
 
-        return view('Homebudget.balance', compact('entries', 'totalIncome', 'totalExpenditure', 'balance', 'month', 'year'));
+        return view('homebudget.balance', compact('entries', 'totalIncome', 'totalExpenditure', 'balance', 'month', 'year'));
     }
 
     // public function getCategoryData()
