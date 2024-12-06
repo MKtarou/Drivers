@@ -43,23 +43,24 @@
         }
 
         function loadMonthlyTransactions() {
-            Object.keys(transactions).forEach(day => {
-                const cell = document.getElementById(`day-${day}`);
-                if (cell) {
-                    cell.innerHTML = `<strong>${day}</strong>`;
-                    transactions[day].forEach(entry => {
-                        if (entry.total_income !== 0 || entry.total_expenditure !== 0) {
-                            cell.innerHTML += `
-                                <div>${entry.user_name || ''}
-                                ${entry.total_income !== 0 ? `+${formatNumber(entry.total_income)}` : ''}
-                                ${entry.total_expenditure !== 0 ? `-${formatNumber(Math.abs(entry.total_expenditure))}` : ''}
-                                ${entry.details ? `${entry.details}</div>` : ''}
-                            `;
-                        }
-                    });
-                }
+    Object.keys(transactions).forEach(day => {
+        const cell = document.getElementById(`day-${day}`);
+        if (cell) {
+            cell.innerHTML = `<strong>${day}</strong>`;
+            transactions[day].forEach(entry => {
+                const transactionDiv = document.createElement('div');
+                transactionDiv.innerHTML = `
+                    ${entry.user_name || ''}
+                    ${entry.total_income !== 0 ? `+${formatNumber(entry.total_income)}` : ''}
+                    ${entry.total_expenditure !== 0 ? `-${formatNumber(Math.abs(entry.total_expenditure))}` : ''}
+                    ${entry.details || ''}
+                `;
+                cell.appendChild(transactionDiv);
             });
         }
+    });
+}
+
 
         function generateCalendar(month, year) {
             const calendar = document.getElementById('calendar');

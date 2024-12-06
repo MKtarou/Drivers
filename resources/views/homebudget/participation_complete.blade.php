@@ -69,8 +69,13 @@
                     <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
                 @endforeach
             </select>
+            <div style="margin-top: 10px;">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">30日間ログイン情報を保持する</label>
+            </div>
             <button type="submit">TOPへ</button>
         </form>
+
 
         <!-- 新規ユーザー登録リンク -->
         <a href="{{ route('user.register.form') }}" class="btn btn-link">新規ユーザー追加</a>

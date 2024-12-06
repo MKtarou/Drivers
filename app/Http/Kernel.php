@@ -70,5 +70,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // その他のルートミドルウェア
         'storeGroupId' => \App\Http\Middleware\StoreGroupIdInSession::class,
+        'checkGroupAndUser' => \App\Http\Middleware\CheckGroupAndUser::class,
     ];
+
 }
