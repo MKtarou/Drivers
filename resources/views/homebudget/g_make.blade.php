@@ -38,6 +38,8 @@
                     <label for="goal">目標金額</label>
                     <input type="number" id="goal" name="goal" required min="0">
                 </div>
+                <input type="checkbox" name="remember_me" value="1">
+                30日間ログイン情報を保持する
                 <button type="submit" class="action-button">作成</button>
             </form>
         </div>
