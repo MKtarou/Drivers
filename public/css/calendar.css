@@ -31,6 +31,8 @@ h1 {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd; /* 境界線を控えめに追加 */
+    position: relative; /* ホバーでポップアップを正しく表示するための基準 */
+    overflow: visible; /* ポップアップが隠れないようにする */
 }
 
 /* カレンダーグリッド */
@@ -69,21 +71,22 @@ h1 {
 .calendar-day {
     border: 1px solid #ddd;
     padding: 0.8vh;
-    min-height: 12vh;
-    max-height: 12vh;
+    min-height: 12vh; /* セルの高さを固定 */
+    max-height: 12vh; /* スクロールを発生させる条件 */
+    overflow-y: auto; /* コンテンツが多い場合にスクロールを有効化 */
     text-align: left;
     background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
     box-sizing: border-box;
-    overflow: hidden;
-    border-radius: 4px;
-    font-size: 1.8vh;
+    font-size: 1.6vh;
+    word-wrap: break-word;
+    position: relative; /* ポップアップ位置を調整するために必要 */
+    transition: transform 0.2s ease, z-index 0.2s ease;
+    z-index: 0; 
 }
 
 .calendar-day:hover {
+    transform: scale(1.5); /* セルを拡大 */
+    z-index: 10; /* 他の要素の上に表示 */
     background-color: #f4edf7;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
@@ -103,8 +106,8 @@ h1 {
     color: #555;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    max-height: 4vh;
-    overflow-y: auto;
+    /* スクロール関連のスタイルを削除 */
+    padding-right: 2px; /* 見た目の調整 */
 }
 
 /* 土日や祝日の文字色 */
