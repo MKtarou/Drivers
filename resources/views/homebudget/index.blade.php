@@ -268,9 +268,9 @@
                                 <td>{{ $homebudget->details ?? 'なし' }}</td>
                                 <td>
                                     @if($homebudget->price > 0)
-                                        <span class="income">+{{ $homebudget->price }}</span>
+                                        <span class="income">+{{ number_format($homebudget->price) }}</span>
                                     @else
-                                        <span class="payment">-{{ abs($homebudget->price) }}</span>
+                                        <span class="payment">-{{ number_format(abs($homebudget->price)) }}</span>
                                     @endif
                                 </td>
                                 <td class="button-td">
@@ -292,8 +292,8 @@
                         {{ $homebudgets->links() }}
                     </div>
                     <div class="flex total">
-                        <p>収入合計：{{ $income }}円</p>
-                        <p>支出合計：{{ $payment }}円</p>
+                        <p>収入合計：{{ number_format($income) }}円</p>
+                        <p>支出合計：{{ number_format($payment) }}円</p>
                     </div>
                 </div>
             </div>
