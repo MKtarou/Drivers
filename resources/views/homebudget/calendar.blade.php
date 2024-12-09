@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>家計簿カレンダー</title>
     <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
 

@@ -5,6 +5,7 @@
     <title>家計簿アプリ</title>
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
     
 </head>
 <body>
