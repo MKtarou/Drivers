@@ -159,6 +159,9 @@
                     <div class="meter">
                         <h2>使用限度額メーター</h2>
                         <canvas id="teamLimitMeter"></canvas>
+                        <p>使用限度{{ $g_limit }}円</p>
+                        <p>現在使用額{{ $teamExpense * -1 }}円</p>
+                        <p>残りの使用可能額{{ $g_limit + $teamExpense }} 円</p>
                         
                     </div>
                     <div class="meter">
@@ -243,11 +246,16 @@
             data: {
                 labels: ['使用済み', '残額'],
                 datasets: [{
-                    data: [personalExpense, -uLimit + personalExpense],
+                    // 使用済み: personalExpenseの絶対値
+                    // 残額: 使用限度額 - 使用済み金額
+                    data: [Math.abs(personalExpense), uLimit - Math.abs(personalExpense)],
                     backgroundColor: ['#FF6384', '#E0E0E0']
                 }]
             },
-            options: { circumference: 180, rotation: -90 }
+            options: { 
+                circumference: 180, // 半円メーター
+                rotation: -90 // メーターの開始位置を調整
+            }
         });
 
         // 個人貯金目標メーター
@@ -267,14 +275,20 @@
         new Chart(document.getElementById('teamLimitMeter'), {
             type: 'doughnut',
             data: {
-                labels: ['使用済み'+teamExpense + '円', '使用限度'+gLimit+'円'],
+                labels: ['使用済み', '残額'],
                 datasets: [{
-                    data: [teamExpense,  -gLimit-teamExpense],
+                    // 使用済み: teamExpenseの絶対値
+                    // 残額: チーム使用限度額 - 使用済み金額
+                    data: [Math.abs(teamExpense), gLimit - Math.abs(teamExpense)],
                     backgroundColor: ['#FF6384', '#E0E0E0']
                 }]
             },
-            options: { circumference: 180, rotation: -90 }
+            options: { 
+                circumference: 180, // 半円メーター
+                rotation: -90 // メーターの開始位置を調整
+            }
         });
+
 
         // チーム貯金目標メーター
         new Chart(document.getElementById('teamGoalMeter'), {
