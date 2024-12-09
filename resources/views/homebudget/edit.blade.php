@@ -10,6 +10,8 @@
             background-color: #f8f0fc;
             color: #333;
         }
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
 
         .edit-page {
             max-width: 600px;

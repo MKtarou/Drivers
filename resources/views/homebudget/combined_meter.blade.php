@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
     <title>家計簿メーター</title>
     <style>
         body {

@@ -155,6 +155,8 @@
             color: #333;
         }
     </style>
+    <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
     @include('homebudget.sidebar')
