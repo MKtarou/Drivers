@@ -103,44 +103,44 @@ class HomebudgetController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'date' => 'required|date',
-        'user_id' => 'required|numeric',
-        'price' => [
-            'required',
-            'numeric',
-            function ($attribute, $value, $fail) use ($request) {
-                if ($request->transaction_type === 'income' && $value < 0) {
-                    $fail('収入はプラスの値で入力してください');
-                }
-                if ($request->transaction_type === 'expense' && $value >= 0) {
-                    $fail('支出はマイナスの値で入力してください');
-                }
-            },
-        ],
-        'transaction_type' => 'required|string',
-        'details' => 'nullable|string',
-        'category' => 'required_if:transaction_type,expense|numeric',
-    ]);
+    {
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'user_id' => 'required|numeric',
+            'price' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->transaction_type === 'income' && $value < 0) {
+                        $fail('収入はプラスの値で入力してください');
+                    }
+                    if ($request->transaction_type === 'expense' && $value >= 0) {
+                        $fail('支出はマイナスの値で入力してください');
+                    }
+                },
+            ],
+            'transaction_type' => 'required|string',
+            'details' => 'nullable|string',
+            'category' => 'required_if:transaction_type,expense|numeric',
+        ]);
 
-    $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
 
-    $homeBudget = new HomeBudget();
-    $homeBudget->date = $request->date;
-    $homeBudget->group_id = $groupId;
-    $homeBudget->user_id = $request->user_id;
-    $homeBudget->price = $request->transaction_type === 'income' ? $request->price : -abs($request->price);
-    $homeBudget->details = $request->details;
+        $homeBudget = new HomeBudget();
+        $homeBudget->date = $request->date;
+        $homeBudget->group_id = $groupId;
+        $homeBudget->user_id = $request->user_id;
+        $homeBudget->price = $request->transaction_type === 'income' ? $request->price : -abs($request->price);
+        $homeBudget->details = $request->details;
 
-    if ($request->transaction_type === 'expense') {
-        $homeBudget->category_id = $request->category;
+        if ($request->transaction_type === 'expense') {
+            $homeBudget->category_id = $request->category;
+        }
+
+        $result = $homeBudget->save();
+        session()->flash('flash_message', $result ? '収支を登録しました。' : '収支を登録できませんでした。');
+        return redirect('/');
     }
-
-    $result = $homeBudget->save();
-    session()->flash('flash_message', $result ? '収支を登録しました。' : '収支を登録できませんでした。');
-    return redirect('/');
-}
 
     /**
      * Display the specified resource.
@@ -407,9 +407,9 @@ class HomebudgetController extends Controller
 
             if (!$group) {
                 // グループが見つからない場合はエラーを返す
-                return redirect()->route('participation_form')
-                    ->withErrors(['group' => 'グループ名またはパスワードが間違っています。']);
-            }
+                return redirect()->route('participation.form')
+                    ->withErrors(['group' => 'グループ名またはパスワードが違います']);
+            }            
 
         // グループIDをセッションに保存
         session(['groupId' => $group->group_id]);
