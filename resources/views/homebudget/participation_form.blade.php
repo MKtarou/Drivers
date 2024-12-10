@@ -79,9 +79,7 @@
 <body>
     <div class="join-group-container">
         <h1>グループへ参加</h1>
-        @if($errors->has('group'))
-            <p class="error">{{ $errors->first('group') }}</p>
-        @endif
+        
         <form action="{{ route('participation.complete') }}" method="post">
             @csrf
             <div class="join-input-group">
@@ -94,6 +92,9 @@
             </div>
             <button type="submit">参加</button>
         </form>
+        @if($errors->has('group'))
+            <p class="error">{{ $errors->first('group') }}</p>
+        @endif
     </div>
 </body>
 </html>
