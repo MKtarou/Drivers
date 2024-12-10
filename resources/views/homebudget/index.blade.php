@@ -328,10 +328,15 @@
                     <textarea id="details" name="details"></textarea>
                     @if($errors->has('details')) <span class="error">{{ $errors->first('details') }}</span> @endif
 
-                    <label for="user">ユーザー:</label>
+                    <label for="user_id">ユーザー:</label>
                     <select name="user_id" id="user_id">
+                        @php
+                            $loggedInUserId = session('userId');
+                        @endphp
                         @foreach($users as $user)
-                            <option value="{{ $user->user_id }}">{{ $user->u_name }}</option>
+                            <option value="{{ $user->user_id }}" {{ $user->user_id == $loggedInUserId ? 'selected' : '' }}>
+                                {{ $user->u_name }}
+                            </option>
                         @endforeach
                     </select>
                     @if($errors->has('user_id')) <span class="error">{{ $errors->first('user_id') }}</span> @endif
