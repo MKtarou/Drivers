@@ -224,6 +224,9 @@
 
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
+
 </head>
 <body>
     <!-- <header>
