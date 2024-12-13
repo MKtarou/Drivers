@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <link rel="stylesheet" href="{{ asset('css/balance.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/balance.css') }}"> -->
     <link rel="icon" href="{{ asset('icons/favicon.ico') }}" type="image/x-icon">
 
     <title>月別収支詳細</title>
