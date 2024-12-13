@@ -98,6 +98,36 @@
             font-size: 16px;
             font-weight: bold;
         }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* ボタンとテキストの間隔を空ける */
+            margin-bottom: 20px;
+        }
+
+        .controls span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .control-btn {
+            text-decoration: none;
+            background: none;
+            border: 2px solid #9b59b6;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #9b59b6;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: bold;
+        }
+
+        .control-btn:hover {
+            background-color: #9b59b6;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -122,7 +152,7 @@
                 <!-- 個人データのグラフ -->
                 <div class="chart-section">
                     <canvas id="personalChart"></canvas>
-                    <p>個人支出合計：{{ $personalExpense }}円</p>
+                    <p>個人支出合計：{{ number_format($personalExpense) }}円</p>
                 </div>
 
                 <!-- 個人メーター -->
@@ -131,9 +161,8 @@
                     <h2>使用限度額メーター</h2>
                         <canvas id="personalLimitMeter"></canvas>
 
-                        <p>使用限度{{ $u_limit }}円</p>
-                        <p>現在使用額{{ $personalExpense * -1 }}円</p>
-                        <p>残りの使用可能額{{ $u_limit + $personalExpense }} 円</p>
+                        <p>使用額{{ number_format($personalExpense * -1) }}円/限度額{{ number_format($u_limit) }}円 </p>
+                        <p>残りの使用可能額{{ number_format($u_limit + $personalExpense) }} 円</p>
                         
                     </div>
                     <div class="meter">
@@ -151,7 +180,7 @@
                 <!-- チームデータのグラフ -->
                 <div class="chart-section">
                     <canvas id="teamChart"></canvas>
-                    <p>グループ支出合計：{{ $teamExpense }}円</p>
+                    <p>グループ支出合計：{{ number_format($teamExpense) }}円</p>
                 </div>
 
                 <!-- チームメーター -->
@@ -159,9 +188,9 @@
                     <div class="meter">
                         <h2>使用限度額メーター</h2>
                         <canvas id="teamLimitMeter"></canvas>
-                        <p>使用限度{{ $g_limit }}円</p>
-                        <p>現在使用額{{ $teamExpense * -1 }}円</p>
-                        <p>残りの使用可能額{{ $g_limit + $teamExpense }} 円</p>
+                        <p>使用限度{{ number_format($g_limit) }}円</p>
+                        <p>現在使用額{{ number_format($teamExpense * -1) }}円</p>
+                        <p>残りの使用可能額{{ number_format($g_limit + $teamExpense) }} 円</p>
                         
                     </div>
                     <div class="meter">
@@ -241,22 +270,26 @@
 
 
         // 個人使用限度額メーター
+        const personalRemainder = uLimit - Math.abs(personalExpense);
         new Chart(document.getElementById('personalLimitMeter'), {
             type: 'doughnut',
             data: {
                 labels: ['使用済み', '残額'],
                 datasets: [{
-                    // 使用済み: personalExpenseの絶対値
-                    // 残額: 使用限度額 - 使用済み金額
-                    data: [Math.abs(personalExpense), uLimit - Math.abs(personalExpense)],
-                    backgroundColor: ['#FF6384', '#E0E0E0']
+                    data: [Math.abs(personalExpense), Math.max(personalRemainder, 0)],
+                    backgroundColor: [
+                        '#4CAF50', 
+                        personalRemainder >= 0 ? '#E0E0E0' : 'red' // 残額が負の場合は赤、それ以外は灰色
+                    ]
                 }]
             },
             options: { 
-                circumference: 180, // 半円メーター
-                rotation: -90 // メーターの開始位置を調整
+                circumference: 180,
+                rotation: -90
             }
         });
+
+
 
         // 個人貯金目標メーター
         new Chart(document.getElementById('personalGoalMeter'), {
@@ -272,20 +305,22 @@
         });
 
         // チーム使用限度額メーター
+        const teamRemainder = gLimit - Math.abs(teamExpense);
         new Chart(document.getElementById('teamLimitMeter'), {
             type: 'doughnut',
             data: {
                 labels: ['使用済み', '残額'],
                 datasets: [{
-                    // 使用済み: teamExpenseの絶対値
-                    // 残額: チーム使用限度額 - 使用済み金額
-                    data: [Math.abs(teamExpense), gLimit - Math.abs(teamExpense)],
-                    backgroundColor: ['#FF6384', '#E0E0E0']
+                    data: [Math.abs(teamExpense), Math.max(teamRemainder, 0)],
+                    backgroundColor: [
+                        '#4CAF50', 
+                        teamRemainder >= 0 ? '#E0E0E0' : 'red' // 残額が負の場合は赤、それ以外は灰色
+                    ]
                 }]
             },
             options: { 
-                circumference: 180, // 半円メーター
-                rotation: -90 // メーターの開始位置を調整
+                circumference: 180,
+                rotation: -90
             }
         });
 
