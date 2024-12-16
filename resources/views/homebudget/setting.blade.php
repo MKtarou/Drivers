@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>設定画面</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <style>
         body {
             display flex;
@@ -119,9 +122,7 @@
         }
 
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
 </head>
 <body>
     <div class="container" id="app">

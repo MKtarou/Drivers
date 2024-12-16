@@ -90,10 +90,12 @@
             border: 1px solid #ddd;
             padding: 5px;
             min-height: 100px;
+            max-height: 100px; /* 最大高さを指定 */
             background-color: #fff;
             position: relative;
             transition: transform 0.2s ease, z-index 0.2s ease;
             z-index: 0;
+            overflow-y: auto; /* オーバーフロー時にスクロールバー表示 */
         }
 
         .calendar-day strong {
@@ -155,7 +157,7 @@
             color: #333;
         }
     </style>
-    <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
+    <!--link rel="stylesheet" href="{{asset('css/calendar.css')}}"-->
     <link rel="icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
