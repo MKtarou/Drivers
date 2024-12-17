@@ -110,27 +110,26 @@ class HomebudgetController extends Controller
             'price' => [
                 'required',
                 'numeric',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($request->transaction_type === 'income' && $value < 0) {
-                        $fail('収入はプラスの値で入力してください');
-                    }
-                    if ($request->transaction_type === 'expense' && $value >= 0) {
-                        $fail('支出はマイナスの値で入力してください');
-                    }
-                },
+                'min:1', // プラスの値のみ許可
             ],
             'transaction_type' => 'required|string',
             'details' => 'nullable|string',
             'category' => 'required_if:transaction_type,expense|numeric',
+        ], [
+            'price.required' => '金額を入力してください。',
+            'price.numeric' => '金額は数値で入力してください。',
+            'price.min' => '金額は正の値でで入力してください。',
         ]);
 
-        $groupId = session('groupId'); // この ID は適宜動的に設定するか、セッションなどで管理する
+        $groupId = session('groupId');
 
         $homeBudget = new HomeBudget();
         $homeBudget->date = $request->date;
         $homeBudget->group_id = $groupId;
         $homeBudget->user_id = $request->user_id;
-        $homeBudget->price = $request->transaction_type === 'income' ? $request->price : -abs($request->price);
+        $homeBudget->price = $request->transaction_type === 'income' 
+            ? abs($request->price) 
+            : -abs($request->price);
         $homeBudget->details = $request->details;
 
         if ($request->transaction_type === 'expense') {
@@ -141,6 +140,8 @@ class HomebudgetController extends Controller
         session()->flash('flash_message', $result ? '収支を登録しました。' : '収支を登録できませんでした。');
         return redirect('/');
     }
+
+
 
     /**
      * Display the specified resource.
@@ -185,47 +186,39 @@ class HomebudgetController extends Controller
     //     return redirect('/');
     // }
     public function update(Request $request)
-{
-    $validated = $request->validate([
-        'date' => 'required|date',
-        'category_id' => 'required|numeric',
-        'price' => [
-            'required',
-            'numeric',
-            function ($attribute, $value, $fail) use ($request) {
-                $homeBudget = HomeBudget::find($request->id);
-
-                if (!$homeBudget) {
-                    $fail('収支データが見つかりません。');
-                    return;
-                }
-
-                if ($homeBudget->price > 0 && $value < 0) {
-                    $fail('収入はプラスの値で入力してください');
-                }
-
-                if ($homeBudget->price < 0 && $value >= 0) {
-                    $fail('支出はマイナスの値で入力してください');
-                }
-            },
-        ],
-    ]);
-
-    $homeBudget = HomeBudget::find($request->id);
-
-    if ($homeBudget) {
-        $homeBudget->update([
-            'date' => $request->date,
-            'category_id' => $request->category_id,
-            'price' => $homeBudget->price < 0 ? -abs($request->price) : abs($request->price),
+    {
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'category_id' => 'required|numeric',
+            'price' => [
+                'required',
+                'numeric',
+                'min:1', // プラスの値のみ許可
+            ],
+        ], [
+            'price.required' => '金額を入力してください。',
+            'price.numeric' => '金額は数値で入力してください。',
+            'price.min' => '金額は正の値で入力してください。',
         ]);
-        session()->flash('flash_message', '収支を更新しました。');
-    } else {
-        session()->flash('flash_error_message', '収支を更新できませんでした。');
+
+        $homeBudget = HomeBudget::find($request->id);
+
+        if ($homeBudget) {
+            $homeBudget->update([
+                'date' => $request->date,
+                'category_id' => $request->category_id,
+                'price' => $homeBudget->price < 0 
+                    ? -abs($request->price) 
+                    : abs($request->price),
+            ]);
+            session()->flash('flash_message', '収支を更新しました。');
+        } else {
+            session()->flash('flash_error_message', '収支を更新できませんでした。');
+        }
+
+        return redirect('/');
     }
 
-    return redirect('/');
-    }
 
     /**
      * Remove the specified resource from storage.

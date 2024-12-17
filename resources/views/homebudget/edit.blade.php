@@ -108,9 +108,9 @@
                 @endforeach
             </select>
 
-            <label for="price">金額:</label>
-            <input type="text" id="price" name="price"  value="{{$homebudget->price}}">
-            @if($errors->has('price')) <span class="error">{{$errors->first('price')}}</span> @endif
+                <label for="price">金額:</label>
+                <input type="text" id="price" name="price" value="{{ abs($homebudget->price) }}">
+                @if($errors->has('price')) <span class="error">{{$errors->first('price')}}</span> @endif
 
             <div class="button-container">
                 <button type="submit" class="edit-button">更新</button>
