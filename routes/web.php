@@ -83,6 +83,9 @@ Route::post('/participation/complete', [HomebudgetController::class, 'participat
 // Combined Meter Route を追加
 // ----------------------------------------
 Route::get('/combined-meter', [CombinedMeterController::class, 'index'])->name('combined.meter');
+Route::post('/combined-meter/addSaving', [CombinedMeterController::class, 'addPersonalSaving'])->name('add.personal.saving');
+Route::post('/combined-meter/addGroupSaving', [CombinedMeterController::class, 'addGroupSaving'])->name('add.group.saving');
+
 
 
 //ログアウト処理

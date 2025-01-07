@@ -14,17 +14,27 @@ class HomebudgetController extends Controller
 {
 
     //セッションチェック
-    public function __construct()
-    {
-        $this->middleware('checkGroupAndUser')->except('participation_form','participation_confirm',
-                                                        'participation_complete','participation_save_user');
-    }
-
-
     public function index(Request $request)
     {
-        $groupId = session('groupId'); // 例: デフォルト値として1を設定
-        $userId = session('userId');  // 例: デフォルト値として1を設定
+        // セッションから取得
+        $groupId = session('groupId');
+        $userId = session('userId');
+
+        // セッションが切れていても、Cookieがあれば復元する
+        if (!$groupId && Cookie::has('groupId')) {
+            $groupId = Cookie::get('groupId');
+            session(['groupId' => $groupId]);
+        }
+
+        if (!$userId && Cookie::has('userId')) {
+            $userId = Cookie::get('userId');
+            session(['userId' => $userId]);
+        }
+
+        // セッションが存在しない＆Cookieにも値がない場合にはnogroup画面へ
+        if (!$groupId || !$userId) {
+            return view('homebudget.nogroup');
+        }
 
         // グループ情報を取得してセッションに保存
         $group = Groups::find($groupId);
@@ -46,19 +56,16 @@ class HomebudgetController extends Controller
             ]);
         }
 
-        
         // グループを取得
         $group = Groups::where('group_id', $groupId)->first();
 
-        // // グループが存在しない場合は `nogroup` ビューを表示
-        // if (!$group) {
-        //     return view('homebudget.nogroup');
-        // }
+        if (!$group) {
+            // グループが存在しない場合はnogroupビューを返す（必要なら）
+            return view('homebudget.nogroup');
+        }
 
         $groupName = $group->g_name;
-
         $users = Users::where('group_id', $groupId)->get();
-
         $homebudgets = HomeBudget::with(['category', 'user'])
             ->where('group_id', $groupId)
             ->orderBy('date', 'desc')
@@ -83,7 +90,6 @@ class HomebudgetController extends Controller
 
         $categories = Category::all();
 
-        // ビューにデータを渡す
         return view('homebudget.index', compact('homebudgets', 'income', 'payment', 'data', 'users', 'categories', 'groupName'));
     }
 
