@@ -21,6 +21,8 @@ class CombinedMeterController extends Controller
         $groupId = session('groupId'); // グループID
         $userId = session('userId');   // ユーザーID
 
+        $activeTab = $request->query('tab', 'personal');
+
         // リクエストから月と年を取得（デフォルトは現在の月と年）
         $month = $request->query('month', date('m'));
         $year = $request->query('year', date('Y'));
@@ -92,6 +94,7 @@ class CombinedMeterController extends Controller
 
         // ビューにデータを渡す
         return view('homebudget.combined_meter', compact(
+            'activeTab',
             'personalIncome', 'personalExpense', 'personalCategories',
             'teamIncome', 'teamExpense', 'teamCategories',
             'g_name', 'u_name', 'u_goal', 'u_limit', 'g_goal', 'g_limit',
@@ -100,5 +103,60 @@ class CombinedMeterController extends Controller
     }
 
 
+    public function addPersonalSaving(Request $request)
+    {
+        // バリデーション
+        $request->validate([
+            'addedSaving' => 'required|integer',  //|min:1',
+            'month' => 'required|integer',
+            'year' => 'required|integer'
+        ]);
+
+        $userId = session('userId');
+        $user = Users::find($userId);
+        if (!$user) {
+            return redirect()->route('nogroup')->withErrors('ユーザーが見つかりません');
+        }
+
+        // 既存のu_savingsに加算
+        $addedAmount = (int)$request->input('addedSaving');
+        $user->u_savings = $user->u_savings + $addedAmount;  // 負の値なら減額
+        $user->save();
+
+        // month, yearを維持してリダイレクト
+        return redirect()->route('combined.meter', [
+            'month' => $request->input('month'),
+            'year' => $request->input('year')
+        ])->with('flash_message', '貯金額を追加しました。');
+    }
+
+
+    public function addGroupSaving(Request $request)
+    {
+        $request->validate([
+            'groupAddedSaving' => 'required|integer',
+            'month' => 'required|integer',
+            'year' => 'required|integer',
+            'tab' => 'nullable|string' // 追加
+        ]);
+
+        $groupId = session('groupId');
+        $group = Groups::find($groupId);
+        if (!$group) {
+            return redirect()->route('nogroup')->withErrors('グループが見つかりません');
+        }
+
+        // 貯金額の更新
+        $addedAmount = (int)$request->input('groupAddedSaving');
+        $group->g_savings += $addedAmount; 
+        $group->save();
+
+        // tabパラメータを維持してリダイレクト
+        return redirect()->route('combined.meter', [
+            'month' => $request->input('month'),
+            'year' => $request->input('year'),
+            'tab' => $request->input('tab') ?? 'team'
+        ])->with('flash_message', 'グループ貯金額を追加しました。');
+    }
 
 }
